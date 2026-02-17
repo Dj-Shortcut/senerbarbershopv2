@@ -12,9 +12,9 @@ import { premiumButtonPrimaryClassName, premiumButtonSecondaryClassName } from "
 import { createDrukteWhatsappUrl } from "../lib/whatsapp";
 
 const facts = [
-  { label: "Jaren ervaring", value: "10+" },
-  { label: "Gemiddelde review", value: "4.9/5" },
-  { label: "Tevreden klanten", value: "4.000+" },
+  { label: "Zorgvuldige afwerking", value: "Elke knipbeurt" },
+  { label: "Persoonlijke aanpak", value: "Op jouw stijl" },
+  { label: "Walk-ins welkom", value: "Vandaag binnen" },
 ];
 
 const dayLabels = ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"];
@@ -66,7 +66,7 @@ export default function HomePage() {
             href="#gallery-heading"
             className={`${premiumButtonSecondaryClassName} min-w-[11rem] flex-1`}
           >
-            Bekijk gallery
+            Bekijk galerij
           </a>
         </Reveal>
       </section>

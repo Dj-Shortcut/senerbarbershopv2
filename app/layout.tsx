@@ -3,25 +3,8 @@ import './globals.css';
 import { BUSINESS_NAME, LOCAL_BUSINESS_SCHEMA, SEO_DESCRIPTION, SEO_TITLE, SITE_URL } from "../lib/seo";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: SEO_TITLE,
-  description: SEO_DESCRIPTION,
-  alternates: {
-    canonical: SITE_URL,
-  },
-  openGraph: {
-    title: SEO_TITLE,
-    description: SEO_DESCRIPTION,
-    url: SITE_URL,
-    siteName: BUSINESS_NAME,
-    locale: "nl_BE",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: SEO_TITLE,
-    description: SEO_DESCRIPTION,
-  },
+  title: 'The Sener Barber',
+  description: 'The Sener Barber in Ninove. Walk-ins welkom voor cuts en baardverzorging.'
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
