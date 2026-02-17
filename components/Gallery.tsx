@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 import Reveal from "./Reveal";
@@ -7,6 +8,7 @@ import Reveal from "./Reveal";
 export interface GalleryItem {
   id: string;
   title: string;
+  imageSrc: string;
   aspect?: "portrait" | "square";
 }
 
@@ -16,12 +18,12 @@ export interface GalleryProps {
 }
 
 const defaultItems: GalleryItem[] = [
-  { id: "signature-fade", title: "Signature Fade", aspect: "portrait" },
-  { id: "skin-fade", title: "Skin Fade", aspect: "portrait" },
-  { id: "beard-detail", title: "Beard Detail", aspect: "portrait" },
-  { id: "classic-cut", title: "Classic Cut", aspect: "portrait" },
-  { id: "lineup", title: "Precision Line-up", aspect: "portrait" },
-  { id: "texture-crop", title: "Texture Crop", aspect: "portrait" },
+  { id: "signature-fade", title: "Signature Fade", imageSrc: "/assets/images/signature-fade.jpg", aspect: "portrait" },
+  { id: "skin-fade", title: "Skin Fade", imageSrc: "/assets/images/skin-fade.jpg", aspect: "portrait" },
+  { id: "classic-cut", title: "Classic Cut", imageSrc: "/assets/images/classic-cut.jpg", aspect: "portrait" },
+  { id: "beard-detail", title: "Beard Detail", imageSrc: "/assets/images/beard-detail.jpg", aspect: "portrait" },
+  { id: "precision-line-up", title: "Precision Line-up", imageSrc: "/assets/images/precision-line-up.jpg", aspect: "portrait" },
+  { id: "texture-crop", title: "Texture Crop", imageSrc: "/assets/images/texture-crop.jpg", aspect: "portrait" },
 ];
 
 function usePrefersReducedMotion() {
@@ -88,12 +90,12 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
         </div>
 
         <Reveal>
-          <article className="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 text-white">
+          <article className="mb-5 overflow-hidden rounded-2xl border border-white/10 bg-black/30 shadow-lg shadow-black/30 backdrop-blur">
             <div ref={videoMountRef} className="aspect-video">
               {shouldRenderVideo ? (
                 <video
                   className="h-full w-full object-cover"
-                  controls
+                  controls={prefersReducedMotion}
                   loop
                   muted
                   playsInline
@@ -101,20 +103,13 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                   autoPlay={!prefersReducedMotion}
                   aria-label="Featured clip"
                 >
-                  <source src="/featured-clip.mp4" type="video/mp4" />
+                  <source src="/assets/video/featured-clip.mp4" type="video/mp4" />
                 </video>
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-slate-800 px-4 text-center">
-                  <p className="text-sm text-slate-200">Featured clip loads as you approach this section.</p>
+                <div className="flex h-full w-full items-center justify-center bg-zinc-900 px-4 text-center">
+                  <p className="text-sm text-zinc-300">Featured clip loads as you approach this section.</p>
                 </div>
               )}
-            </div>
-            <div className="px-4 py-3">
-              <p className="text-sm font-medium">Featured clip</p>
-              <p className="text-xs text-slate-300">Bekijk onze latest cut reel in de gallery.</p>
-              {prefersReducedMotion ? (
-                <p className="mt-1 text-xs text-slate-300">Autoplay is disabled to respect reduced-motion preferences.</p>
-              ) : null}
             </div>
           </article>
         </Reveal>
@@ -125,10 +120,17 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
 
             return (
               <Reveal key={item.id} delayMs={index * 40}>
-                <article className="group relative overflow-hidden rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900 via-zinc-900 to-zinc-800/80 backdrop-blur">
-                  <div className={`${aspectClass} w-full`}>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-zinc-100/5" />
-                    <div className="pointer-events-none absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                <article className="group relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/70 shadow-md shadow-black/30">
+                  <div className={`${aspectClass} relative w-full overflow-hidden`}>
+                    <Image
+                      src={item.imageSrc}
+                      alt={item.title}
+                      fill
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 30vw"
+                      className="object-cover transition duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-110 motion-reduce:transform-none"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-black/0 transition group-hover:from-black/45" />
+                    <div className="absolute bottom-0 left-0 right-0 m-3 rounded-lg border border-white/10 bg-black/35 px-3 py-2 backdrop-blur-sm sm:m-4">
                       <p className="text-sm font-medium text-zinc-100">{item.title}</p>
                     </div>
                   </div>

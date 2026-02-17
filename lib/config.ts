@@ -1,7 +1,7 @@
 export const PHONE_E164 =
   process.env.NEXT_PUBLIC_PHONE_E164 ?? process.env.PHONE_E164 ?? "+32488383871";
 
-export const PHONE_DISPLAY = "+32 488 38 38 71";
+export const PHONE_DISPLAY = "0488 38 38 71";
 
 export const CONTACT_CONFIG = {
   social: {
@@ -22,8 +22,6 @@ export const CONTACT_CONFIG = {
 } as const;
 
 export const FOOTER_CONFIG = {
-  creditText: "Built & maintained by DJ Shortcut",
-  maintainerHref: "https://github.com/Dj-Shortcut",
-  projectRepoText: "Project repo",
+  creditText: "Built & maintained by DJ-Shortcut",
   projectRepoHref: "https://github.com/Dj-Shortcut/senerbarbershop",
 } as const;

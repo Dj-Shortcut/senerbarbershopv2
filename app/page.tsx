@@ -23,12 +23,13 @@ const dayLabels = ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"];
 export default function HomePage() {
   const status = useMemo(() => getShopStatus(new Date()), []);
   const selectedService = SERVICES[0];
+  const today = new Date().getDay();
 
   return (
     <main className="pb-20">
       <section className="mx-auto max-w-6xl px-4 pb-10 pt-14 sm:px-6 lg:px-8">
         <Reveal>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-600">Sener Barbershop</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-300">Sener Barbershop</p>
         </Reveal>
         <Reveal delayMs={40}>
           <span className={`mt-4 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${status.isOpen ? "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30" : "bg-zinc-800 text-zinc-300 ring-1 ring-zinc-700"}`}>
@@ -42,7 +43,7 @@ export default function HomePage() {
         </Reveal>
         <Reveal delayMs={120}>
           <p className="mt-5 max-w-2xl text-lg text-zinc-300">
-          Stap binnen voor een look die past bij jouw stijl.
+            Stap binnen voor een look die past bij jouw stijl. Geen afspraak nodig, walk-ins zijn welkom.
           </p>
         </Reveal>
         <Reveal delayMs={160} className="mt-6">
@@ -70,8 +71,8 @@ export default function HomePage() {
           </a>
         </Reveal>
         <Reveal delayMs={220}>
-          <p className="mt-4 text-sm text-slate-600">
-            Bel ons: <a href={`tel:${PHONE_E164}`} className="font-semibold text-slate-900 underline">{PHONE_DISPLAY}</a>
+          <p className="mt-4 text-sm text-zinc-300">
+            Bel ons: <a href={`tel:${PHONE_E164}`} className="font-semibold text-zinc-100 underline decoration-white/40 underline-offset-4">{PHONE_DISPLAY}</a>
           </p>
         </Reveal>
       </section>
@@ -93,7 +94,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-4xl px-4">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-xl font-semibold text-zinc-100">Openingstijden</h2>
-            <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${status.isOpen ? "border-emerald-500/20 bg-emerald-500/15 text-emerald-200" : "border-white/15 bg-white/5 text-white/60"}`}>
+            <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${status.isOpen ? "border-emerald-500/20 bg-emerald-500/15 text-emerald-200" : "border-white/15 bg-white/5 text-white/75"}`}>
               {status.isOpen ? "Open" : "Gesloten"}
             </span>
           </div>
@@ -105,12 +106,16 @@ export default function HomePage() {
                 const date = new Date(currentDate);
                 date.setDate(currentDate.getDate() + offset);
                 const daySchedule = getScheduleForDate(date);
+                const isToday = dayIndex === today;
 
                 return (
-                  <div key={label} className="grid grid-cols-1 gap-y-1 py-3 text-sm md:grid-cols-[80px_1fr] md:items-center md:gap-x-4 md:gap-y-0">
-                    <span className="text-white/90 font-semibold">{label}</span>
-                    <span className="text-white/80 tabular-nums md:text-right">
-                      {daySchedule.closed ? "Gesloten" : `${daySchedule.open} - ${daySchedule.close}`}
+                  <div
+                    key={label}
+                    className={`grid grid-cols-[1fr_auto] items-center gap-4 py-3 text-sm ${isToday ? "-mx-2 rounded-lg bg-emerald-500/10 px-2" : ""}`}
+                  >
+                    <span className={`font-semibold ${isToday ? "text-emerald-200" : "text-white/90"}`}>{label}{isToday ? " (vandaag)" : ""}</span>
+                    <span className="tabular-nums text-right text-white/85">
+                      {daySchedule.closed ? <span className="font-medium text-zinc-300">Gesloten</span> : `${daySchedule.open} - ${daySchedule.close}`}
                     </span>
                   </div>
                 );
