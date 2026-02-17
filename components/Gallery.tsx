@@ -95,6 +95,7 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
               {shouldRenderVideo ? (
                 <video
                   className="h-full w-full object-cover"
+                  style={{ objectPosition: "50% 20%" }}
                   controls={prefersReducedMotion}
                   loop
                   muted
