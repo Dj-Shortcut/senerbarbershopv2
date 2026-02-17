@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
 import Reveal from "./Reveal";
 
 export interface GalleryItem {
@@ -20,7 +24,59 @@ const defaultItems: GalleryItem[] = [
   { id: "texture-crop", title: "Texture Crop", aspect: "portrait" },
 ];
 
+function usePrefersReducedMotion() {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => {
+      setPrefersReducedMotion(mediaQuery.matches);
+    };
+
+    updatePreference();
+    mediaQuery.addEventListener("change", updatePreference);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updatePreference);
+    };
+  }, []);
+
+  return prefersReducedMotion;
+}
+
 export default function Gallery({ items = defaultItems, className = "" }: GalleryProps) {
+  const videoMountRef = useRef<HTMLDivElement | null>(null);
+  const [shouldRenderVideo, setShouldRenderVideo] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  useEffect(() => {
+    const node = videoMountRef.current;
+
+    if (!node) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setShouldRenderVideo(true);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: "300px 0px", threshold: 0.01 },
+    );
+
+    observer.observe(node);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section className={`w-full py-12 sm:py-16 ${className}`.trim()} aria-labelledby="gallery-heading">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -32,15 +88,33 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
         </div>
 
         <Reveal>
-          <article className="mb-4 overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/80 text-zinc-100 backdrop-blur">
-            <div className="aspect-video">
-              <video className="h-full w-full object-cover" controls preload="none" poster="" aria-label="Featured clip">
-                <source src="/featured-clip.mp4" type="video/mp4" />
-              </video>
+          <article className="mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 text-white">
+            <div ref={videoMountRef} className="aspect-video">
+              {shouldRenderVideo ? (
+                <video
+                  className="h-full w-full object-cover"
+                  controls
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  autoPlay={!prefersReducedMotion}
+                  aria-label="Featured clip"
+                >
+                  <source src="/featured-clip.mp4" type="video/mp4" />
+                </video>
+              ) : (
+                <div className="flex h-full w-full items-center justify-center bg-slate-800 px-4 text-center">
+                  <p className="text-sm text-slate-200">Featured clip loads as you approach this section.</p>
+                </div>
+              )}
             </div>
             <div className="px-4 py-3">
               <p className="text-sm font-medium">Featured clip</p>
-              <p className="text-xs text-zinc-400">Bekijk onze latest cut reel in de gallery.</p>
+              <p className="text-xs text-slate-300">Bekijk onze latest cut reel in de gallery.</p>
+              {prefersReducedMotion ? (
+                <p className="mt-1 text-xs text-slate-300">Autoplay is disabled to respect reduced-motion preferences.</p>
+              ) : null}
             </div>
           </article>
         </Reveal>
