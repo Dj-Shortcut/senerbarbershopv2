@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import Gallery from "../components/Gallery";
 import PricesList from "../components/PricesList";
 import Reveal from "../components/Reveal";
+import Footer from "../components/Footer";
 import { getScheduleForDate } from "../lib/schedule";
 import { SERVICES, getServiceLabel } from "../lib/services";
 import { getShopStatus } from "../lib/status";
@@ -105,6 +106,7 @@ export default function HomePage() {
 
       <Gallery />
       <PricesList />
+      <Footer />
     </main>
   );
 }
