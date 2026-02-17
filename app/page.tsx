@@ -58,13 +58,13 @@ export default function HomePage() {
         <Reveal delayMs={180} className="mt-4 flex flex-wrap gap-3">
           <a
             href="#prijzen"
-            className={premiumButtonSecondaryClassName}
+            className={`${premiumButtonSecondaryClassName} min-w-[11rem] flex-1`}
           >
             Bekijk prijzen
           </a>
           <a
             href="#gallery-heading"
-            className={premiumButtonSecondaryClassName}
+            className={`${premiumButtonSecondaryClassName} min-w-[11rem] flex-1`}
           >
             Bekijk gallery
           </a>
