@@ -1,3 +1,8 @@
+export const PHONE_E164 =
+  process.env.NEXT_PUBLIC_PHONE_E164 ?? process.env.PHONE_E164 ?? "+32488383871";
+
+export const PHONE_DISPLAY = "+32 488 38 38 71";
+
 export const CONTACT_CONFIG = {
   social: {
     instagram: {
