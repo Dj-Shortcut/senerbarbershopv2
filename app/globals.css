@@ -4,6 +4,10 @@
 
 :root {
   color-scheme: dark;
+  --ios-glass-bg: rgba(255, 255, 255, 0.08);
+  --ios-glass-bg-hover: rgba(255, 255, 255, 0.14);
+  --ios-glass-border: rgba(255, 255, 255, 0.2);
+  --ios-glass-ring: rgba(255, 255, 255, 0.28);
 }
 
 body {
@@ -19,6 +23,34 @@ body {
   opacity: 1;
   transform: translateY(0);
   transition: transform 300ms ease-out, opacity 300ms ease-out;
+}
+
+@layer components {
+  .ios-glass-pill {
+    @apply inline-flex h-11 items-center justify-center gap-2 rounded-full border px-5 text-sm font-semibold text-zinc-100 shadow-sm shadow-black/20 transition duration-200 ease-out;
+    border-color: var(--ios-glass-border);
+    background: var(--ios-glass-bg);
+    backdrop-filter: blur(14px);
+  }
+
+  .ios-glass-pill:hover {
+    background: var(--ios-glass-bg-hover);
+  }
+
+  .ios-glass-pill:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .ios-glass-pill:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px var(--ios-glass-ring);
+  }
+
+  .ios-glass-pill--primary {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.1));
+    border-color: rgba(255, 255, 255, 0.3);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
