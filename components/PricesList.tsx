@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { SERVICES, getServiceLabel } from "../lib/services";
+import { premiumButtonClassName } from "../lib/ui";
 import { createDrukteMessage, createDrukteWhatsappUrl } from "../lib/whatsapp";
 
 export default function PricesList() {
@@ -12,11 +13,11 @@ export default function PricesList() {
   return (
     <section id="prijzen" className="py-8">
       <div className="mx-auto max-w-5xl px-4">
-        <h2 className="text-2xl font-semibold text-slate-900 sm:text-3xl">Prijzen</h2>
-        <p className="mt-2 text-sm text-slate-600">Populaire keuze: {selectedService.name}</p>
+        <h2 className="text-2xl font-semibold text-zinc-100 sm:text-3xl">Prijzen</h2>
+        <p className="mt-2 text-sm text-zinc-400">Populaire keuze: {selectedService.name}</p>
 
-        <article className="mt-6 w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <div className="divide-y divide-slate-200">
+        <article className="mt-6 w-full overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/80 shadow-sm shadow-black/20 backdrop-blur">
+          <div className="divide-y divide-zinc-800">
             {SERVICES.map((service) => {
               const isActive = service.id === selectedService.id;
 
@@ -26,11 +27,11 @@ export default function PricesList() {
                   type="button"
                   onClick={() => setSelectedService(service)}
                   className={`flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition ${
-                    isActive ? "bg-slate-50" : "hover:bg-slate-50"
+                    isActive ? "bg-zinc-800/80" : "hover:bg-zinc-800/60"
                   }`}
                 >
-                  <p className="font-medium text-slate-800">{service.name}</p>
-                  <p className="shrink-0 text-slate-900">{service.price}</p>
+                  <p className="font-medium text-zinc-200">{service.name}</p>
+                  <p className="shrink-0 text-zinc-100">{service.price}</p>
                 </button>
               );
             })}
@@ -41,11 +42,11 @@ export default function PricesList() {
           href={createDrukteWhatsappUrl(getServiceLabel(selectedService))}
           target="_blank"
           rel="noreferrer"
-          className="mt-4 inline-flex rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-black transition hover:opacity-90"
+          className="mt-4 inline-flex text-xs font-medium text-slate-500 underline-offset-2 transition hover:text-slate-700 hover:underline"
         >
           Check drukte via WhatsApp
         </a>
-        <p className="mt-2 text-xs text-slate-500">Template preview: {whatsappMessage}</p>
+        <p className="mt-2 text-xs text-zinc-500">Template preview: {whatsappMessage}</p>
       </div>
     </section>
   );
