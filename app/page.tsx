@@ -37,12 +37,12 @@ export default function HomePage() {
         </Reveal>
         <Reveal delayMs={60}>
           <h1 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-zinc-50 sm:text-5xl">
-            Strakke cuts, consistente kwaliteit en een rustige barber ervaring.
+            The Sener Barber
           </h1>
         </Reveal>
         <Reveal delayMs={120}>
           <p className="mt-5 max-w-2xl text-lg text-zinc-300">
-            Stap binnen voor een look die past bij jouw stijl. Geen afspraak nodig, walk-ins zijn welkom.
+            Barbier in Ninove voor premium herensnitten, baardverzorging en een verzorgde look. Geen afspraak nodig, walk-ins zijn welkom.
           </p>
         </Reveal>
         <Reveal delayMs={160} className="mt-6">
