@@ -1,7 +1,32 @@
+export const WHATSAPP_NUMBER =
+  process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "+32488383871";
+
 export const PHONE_E164 =
   process.env.NEXT_PUBLIC_PHONE_E164 ?? process.env.PHONE_E164 ?? "+32488383871";
 
 export const PHONE_DISPLAY = "0488 38 38 71";
+
+export const OPEN_DAYS = ["tuesday", "wednesday", "thursday", "friday", "saturday"] as const;
+
+export const OPEN_HOUR = {
+  tuesday: "10:00",
+  wednesday: "10:00",
+  thursday: "10:00",
+  friday: "10:00",
+  saturday: "09:00",
+} as const;
+
+export const CLOSE_HOUR = {
+  tuesday: "19:00",
+  wednesday: "19:00",
+  thursday: "20:00",
+  friday: "20:00",
+  saturday: "18:00",
+} as const;
+
+export const HOLIDAYS_BY_YEAR: Record<number, string[]> = {
+  2026: ["01-01", "12-25", "12-26"],
+};
 
 export const CONTACT_CONFIG = {
   social: {

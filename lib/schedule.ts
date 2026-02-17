@@ -1,3 +1,5 @@
+import { CLOSE_HOUR, HOLIDAYS_BY_YEAR, OPEN_DAYS, OPEN_HOUR } from "./config";
+
 export type WeekDay =
   | "sunday"
   | "monday"
@@ -13,29 +15,37 @@ export type DailySchedule = {
   closed?: boolean;
 };
 
-export const OPENING_HOURS: Record<WeekDay, DailySchedule> = {
-  monday: { open: "00:00", close: "00:00", closed: true },
-  tuesday: { open: "10:00", close: "19:00" },
-  wednesday: { open: "10:00", close: "19:00" },
-  thursday: { open: "10:00", close: "20:00" },
-  friday: { open: "10:00", close: "20:00" },
-  saturday: { open: "09:00", close: "18:00" },
-  sunday: { open: "00:00", close: "00:00", closed: true },
-};
-
-export const HOLIDAY_OVERRIDES: Record<string, DailySchedule> = {
-  "2026-01-01": { open: "00:00", close: "00:00", closed: true },
-  "2026-12-25": { open: "00:00", close: "00:00", closed: true },
-  "2026-12-26": { open: "00:00", close: "00:00", closed: true },
-};
-
 const DAY_KEYS: WeekDay[] = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
-export function getScheduleForDate(date: Date) {
-  const isoDate = date.toISOString().slice(0, 10);
-  const holidayOverride = HOLIDAY_OVERRIDES[isoDate];
-  if (holidayOverride) return holidayOverride;
+const CLOSED_DAY: DailySchedule = { open: "00:00", close: "00:00", closed: true };
+
+function toLocalIsoDate(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function isHoliday(date: Date) {
+  const year = date.getFullYear();
+  const monthDay = `${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+  return HOLIDAYS_BY_YEAR[year]?.includes(monthDay) ?? false;
+}
+
+export function getScheduleForDate(date: Date): DailySchedule {
+  if (isHoliday(date)) {
+    return CLOSED_DAY;
+  }
 
   const day = DAY_KEYS[date.getDay()];
-  return OPENING_HOURS[day];
+  if (!OPEN_DAYS.includes(day as (typeof OPEN_DAYS)[number])) {
+    return CLOSED_DAY;
+  }
+
+  return {
+    open: OPEN_HOUR[day as keyof typeof OPEN_HOUR],
+    close: CLOSE_HOUR[day as keyof typeof CLOSE_HOUR],
+  };
 }
+
+export { toLocalIsoDate };

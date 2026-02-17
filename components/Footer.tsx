@@ -10,7 +10,8 @@ export default function Footer() {
             href={CONTACT_CONFIG.social.instagram.href}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 text-white/85 transition hover:text-white"
+            aria-label="Open Instagram profiel"
+            className="inline-flex items-center gap-2 text-white/85 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded"
           >
             <Instagram size={15} />
             <span>Instagram</span>
@@ -19,12 +20,13 @@ export default function Footer() {
             href={CONTACT_CONFIG.social.facebook.href}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 text-white/85 transition hover:text-white"
+            aria-label="Open Facebook pagina"
+            className="inline-flex items-center gap-2 text-white/85 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded"
           >
             <Facebook size={15} />
             <span>Facebook</span>
           </a>
-          <a href={`tel:${PHONE_E164}`} className="inline-flex items-center gap-2 text-white/85 transition hover:text-white">
+          <a href={`tel:${PHONE_E164}`} aria-label="Bel The Sener Barber" className="inline-flex items-center gap-2 text-white/85 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded">
             <Phone size={15} />
             <span>{PHONE_DISPLAY}</span>
           </a>
@@ -32,7 +34,8 @@ export default function Footer() {
             href={CONTACT_CONFIG.address.mapsHref}
             target="_blank"
             rel="noopener"
-            className="inline-flex items-center gap-2 text-white/85 transition hover:text-white"
+            aria-label="Open adres in Google Maps"
+            className="inline-flex items-center gap-2 text-white/85 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded"
           >
             <MapPin size={15} />
             <span>{CONTACT_CONFIG.address.label}</span>
@@ -41,7 +44,8 @@ export default function Footer() {
             href={FOOTER_CONFIG.projectRepoHref}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 text-white/75 transition hover:text-white"
+            aria-label="Open project repository"
+            className="inline-flex items-center gap-2 text-white/75 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded"
           >
             <Github size={15} />
             <span>{FOOTER_CONFIG.creditText}</span>

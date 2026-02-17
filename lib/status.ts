@@ -7,7 +7,7 @@ function toMinutes(time: string) {
   return hours * 60 + minutes;
 }
 
-export function getShopStatus(now = new Date()) {
+export function getStatus(now = new Date()) {
   const schedule = getScheduleForDate(now);
   if (schedule.closed) {
     return { isOpen: false, busyLevel: "Rustig" as BusyLevel, label: "Gesloten" };
@@ -27,3 +27,5 @@ export function getShopStatus(now = new Date()) {
 
   return { isOpen: true, busyLevel, label: `Open • ${busyLevel}` };
 }
+
+export const getShopStatus = getStatus;

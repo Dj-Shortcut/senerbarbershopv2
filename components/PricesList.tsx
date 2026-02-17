@@ -141,7 +141,8 @@ function PriceSectionCard({
               data-selected={isSelected ? "true" : "false"}
               data-pressed={isPressed ? "true" : "false"}
               aria-pressed={isSelected}
-              className="price-row grid w-full gap-3 px-5 py-4 text-left transition sm:grid-cols-[1fr_auto] sm:items-center"
+              aria-label={`${service.name} ${service.price}`}
+              className="price-row grid w-full gap-3 px-5 py-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/70 sm:grid-cols-[1fr_auto] sm:items-center"
               style={{ "--stagger": `${index * 60}ms` } as CSSProperties}
             >
               <div className="price-row__content">
