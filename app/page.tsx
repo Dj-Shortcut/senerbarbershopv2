@@ -28,7 +28,7 @@ export default function HomePage() {
     <main className="pb-20">
       <section className="mx-auto max-w-6xl px-4 pb-10 pt-14 sm:px-6 lg:px-8">
         <Reveal>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-300">Sener Barbershop</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-300">The Sener Barber</p>
         </Reveal>
         <Reveal delayMs={40}>
           <span className={`mt-4 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${status.isOpen ? "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30" : "bg-zinc-800 text-zinc-300 ring-1 ring-zinc-700"}`}>
@@ -37,12 +37,12 @@ export default function HomePage() {
         </Reveal>
         <Reveal delayMs={60}>
           <h1 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-zinc-50 sm:text-5xl">
-            Strakke cuts, consistente kwaliteit en een rustige barber ervaring.
+            The Sener Barber
           </h1>
         </Reveal>
         <Reveal delayMs={120}>
           <p className="mt-5 max-w-2xl text-lg text-zinc-300">
-            Stap binnen voor een look die past bij jouw stijl. Geen afspraak nodig, walk-ins zijn welkom.
+            Barbier in Ninove voor premium herensnitten, baardverzorging en een verzorgde look. Geen afspraak nodig, walk-ins zijn welkom.
           </p>
         </Reveal>
         <Reveal delayMs={160} className="mt-6">
