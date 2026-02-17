@@ -4,7 +4,7 @@ const WHATSAPP_PHONE = ((PHONE_E164 ?? "").replace(/\D/g, "") || "+32488383871".
 // Fallback keeps WhatsApp links functional even if env config is missing at runtime.
 
 export function createDrukteMessage(serviceLabel: string) {
-  return `Hi Sener Barbershop! Ik wil graag de wachttijd checken voor: ${serviceLabel}.`;
+  return `Hi The Sener Barber! Ik wil graag de wachttijd checken voor: ${serviceLabel}.`;
 }
 
 export function createWhatsappUrl(message: string) {

@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Sener Barbershop v2',
-  description: 'Baseline v2 setup for Sener Barbershop'
+  title: 'The Sener Barber',
+  description: 'The Sener Barber in Ninove. Walk-ins welkom voor cuts en baardverzorging.'
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

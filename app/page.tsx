@@ -12,9 +12,9 @@ import { premiumButtonPrimaryClassName, premiumButtonSecondaryClassName } from "
 import { createDrukteWhatsappUrl } from "../lib/whatsapp";
 
 const facts = [
-  { label: "Jaren ervaring", value: "10+" },
-  { label: "Gemiddelde review", value: "4.9/5" },
-  { label: "Tevreden klanten", value: "4.000+" },
+  { label: "Zorgvuldige afwerking", value: "Elke knipbeurt" },
+  { label: "Persoonlijke aanpak", value: "Op jouw stijl" },
+  { label: "Walk-ins welkom", value: "Vandaag binnen" },
 ];
 
 const dayLabels = ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"];
@@ -28,7 +28,7 @@ export default function HomePage() {
     <main className="pb-20">
       <section className="mx-auto max-w-6xl px-4 pb-10 pt-14 sm:px-6 lg:px-8">
         <Reveal>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-300">Sener Barbershop</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-300">The Sener Barber</p>
         </Reveal>
         <Reveal delayMs={40}>
           <span className={`mt-4 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${status.isOpen ? "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30" : "bg-zinc-800 text-zinc-300 ring-1 ring-zinc-700"}`}>
@@ -66,7 +66,7 @@ export default function HomePage() {
             href="#gallery-heading"
             className={`${premiumButtonSecondaryClassName} min-w-[11rem] flex-1`}
           >
-            Bekijk gallery
+            Bekijk galerij
           </a>
         </Reveal>
       </section>
