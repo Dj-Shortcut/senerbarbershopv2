@@ -5,6 +5,14 @@ import { SERVICES, type Service } from "../lib/services";
 
 const sectionDefinitions = [
   {
+    key: "combo",
+    heading: "Combo",
+    itemIds: ["knippen-baard"],
+    descriptions: {
+      "knippen-baard": "Volledige grooming in één sessie.",
+    },
+  },
+  {
     key: "knippen",
     heading: "Knippen",
     itemIds: ["knippen", "tondeuse", "haarwassen"],
@@ -24,14 +32,6 @@ const sectionDefinitions = [
     },
   },
   {
-    key: "combo",
-    heading: "Combo",
-    itemIds: ["knippen-baard"],
-    descriptions: {
-      "knippen-baard": "Volledige grooming in één sessie.",
-    },
-  },
-  {
     key: "kids",
     heading: "Kids",
     itemIds: ["kinderen"],
@@ -40,6 +40,16 @@ const sectionDefinitions = [
     },
   },
 ] as const;
+
+const serviceDetails: Record<string, string> = {
+  knippen: "±30 min • Inclusief afwerking",
+  tondeuse: "±20 min • Strakke contouren",
+  haarwassen: "±10 min • Verfrissende verzorging",
+  baard: "±25 min • Hot towel finish",
+  wax: "±10 min • Neus of oren",
+  "knippen-baard": "±50 min • Volledige grooming",
+  kinderen: "±25 min • Rustige aanpak",
+};
 
 type SectionDefinition = (typeof sectionDefinitions)[number];
 
@@ -81,13 +91,19 @@ function useRevealOnScroll<T extends HTMLElement>() {
 
 function PriceSectionCard({
   section,
-  selectedService,
-  onSelect,
+  selectedId,
+  pressedId,
+  onToggleSelect,
+  onPressStart,
+  onPressEnd,
   servicesById,
 }: {
   section: SectionDefinition;
-  selectedService: Service;
-  onSelect: (service: Service) => void;
+  selectedId: string | null;
+  pressedId: string | null;
+  onToggleSelect: (service: Service) => void;
+  onPressStart: (serviceId: string) => void;
+  onPressEnd: (serviceId: string) => void;
   servicesById: Map<string, Service>;
 }) {
   const { ref, isVisible } = useRevealOnScroll<HTMLElement>();
@@ -108,21 +124,32 @@ function PriceSectionCard({
             return null;
           }
 
-          const isActive = service.id === selectedService.id;
+          const isSelected = service.id === selectedId;
+          const isPressed = service.id === pressedId;
           const description = section.descriptions[service.id as keyof typeof section.descriptions];
+          const detail = serviceDetails[service.id];
 
           return (
             <button
               key={service.id}
               type="button"
-              onClick={() => onSelect(service)}
-              data-active={isActive ? "true" : "false"}
+              onClick={() => onToggleSelect(service)}
+              onPointerDown={() => onPressStart(service.id)}
+              onPointerUp={() => onPressEnd(service.id)}
+              onPointerCancel={() => onPressEnd(service.id)}
+              onPointerLeave={() => onPressEnd(service.id)}
+              data-selected={isSelected ? "true" : "false"}
+              data-pressed={isPressed ? "true" : "false"}
+              aria-pressed={isSelected}
               className="price-row grid w-full gap-3 px-5 py-4 text-left transition sm:grid-cols-[1fr_auto] sm:items-center"
               style={{ "--stagger": `${index * 60}ms` } as CSSProperties}
             >
-              <div>
+              <div className="price-row__content">
                 <p className="price-row__title text-base font-medium text-zinc-50">{service.name}</p>
                 <p className="mt-1 text-sm text-zinc-400">{description}</p>
+                <div className="price-row__details" data-open={isSelected ? "true" : "false"}>
+                  <p className="pt-2 text-xs font-medium tracking-wide text-zinc-300">{detail}</p>
+                </div>
               </div>
 
               <span className="price-badge inline-flex h-8 w-fit items-center rounded-full border border-white/15 bg-white/10 px-3 text-sm font-semibold tracking-wide text-zinc-100 sm:justify-self-end">
@@ -137,25 +164,69 @@ function PriceSectionCard({
 }
 
 export default function PricesList() {
-  const [selectedService, setSelectedService] = useState(SERVICES[0]);
+  const [selectedId, setSelectedId] = useState<string | null>(SERVICES[0]?.id ?? null);
+  const [pressedId, setPressedId] = useState<string | null>(null);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const servicesById = useMemo(() => new Map(SERVICES.map((service) => [service.id, service])), []);
+
+  const selectedService = selectedId ? servicesById.get(selectedId) ?? null : null;
+
+  useEffect(() => {
+    if (!toastMessage) {
+      return;
+    }
+
+    const timeout = window.setTimeout(() => setToastMessage(null), 1500);
+    return () => window.clearTimeout(timeout);
+  }, [toastMessage]);
+
+  const handleToggleSelect = (service: Service) => {
+    setSelectedId((currentId) => {
+      if (currentId === service.id) {
+        setToastMessage(null);
+        return null;
+      }
+
+      setToastMessage(`Toegevoegd: ${service.name} (${service.price})`);
+      return service.id;
+    });
+  };
+
+  const handlePressStart = (serviceId: string) => {
+    setPressedId(serviceId);
+  };
+
+  const handlePressEnd = (serviceId: string) => {
+    setPressedId((currentId) => (currentId === serviceId ? null : currentId));
+  };
 
   return (
     <section id="prijzen" className="py-8">
       <div className="mx-auto max-w-4xl px-4">
         <h2 className="text-2xl font-semibold text-zinc-100 sm:text-3xl">Prijzen</h2>
-        <p className="mt-2 text-sm text-zinc-400">Meest gekozen vandaag: {selectedService.name}</p>
+        <p className="mt-2 text-sm text-zinc-400">
+          Meest gekozen vandaag: {selectedService?.name ?? "Kies een behandeling"}
+        </p>
 
         <div className="mt-6 space-y-5">
           {sectionDefinitions.map((section) => (
             <PriceSectionCard
               key={section.key}
               section={section}
-              selectedService={selectedService}
-              onSelect={setSelectedService}
+              selectedId={selectedId}
+              pressedId={pressedId}
+              onToggleSelect={handleToggleSelect}
+              onPressStart={handlePressStart}
+              onPressEnd={handlePressEnd}
               servicesById={servicesById}
             />
           ))}
+        </div>
+
+        <div className="price-toast-wrap" aria-live="polite" aria-atomic="true">
+          <div className="price-toast" data-visible={toastMessage ? "true" : "false"}>
+            {toastMessage}
+          </div>
         </div>
 
         <p className="mt-4 text-xs text-zinc-500">Prijzen en beschikbaarheid kunnen variëren • Betaalopties ter plaatse</p>
