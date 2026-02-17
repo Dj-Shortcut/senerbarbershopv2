@@ -11,7 +11,7 @@ export default function PricesList() {
 
   return (
     <section id="prijzen" className="py-8">
-      <div className="mx-auto max-w-5xl px-4">
+      <div className="max-w-5xl mx-auto px-4">
         <h2 className="text-2xl font-semibold text-slate-900 sm:text-3xl">Prijzen</h2>
         <p className="mt-2 text-sm text-slate-600">Populaire keuze: {selectedService.name}</p>
 
@@ -25,12 +25,12 @@ export default function PricesList() {
                   key={service.id}
                   type="button"
                   onClick={() => setSelectedService(service)}
-                  className={`flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition ${
+                  className={`flex w-full flex-col items-start gap-2 px-4 py-4 text-left transition sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:px-5 lg:min-h-20 lg:px-6 xl:min-h-24 ${
                     isActive ? "bg-slate-50" : "hover:bg-slate-50"
                   }`}
                 >
-                  <p className="font-medium text-slate-800">{service.name}</p>
-                  <p className="shrink-0 text-slate-900">{service.price}</p>
+                  <p className="w-full text-base font-medium leading-6 text-slate-800 lg:max-w-[75%] xl:max-w-[80%]">{service.name}</p>
+                  <p className="w-full text-base font-semibold text-slate-900 sm:w-auto sm:shrink-0">{service.price}</p>
                 </button>
               );
             })}
