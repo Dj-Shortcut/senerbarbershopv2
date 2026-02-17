@@ -70,26 +70,28 @@ function usePrefersReducedMotion() {
 
 export default function Gallery({ items = defaultItems, className = "" }: GalleryProps) {
   const videoMountRef = useRef<HTMLDivElement | null>(null);
+  const carouselViewportRef = useRef<HTMLDivElement | null>(null);
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
   const pointerStartX = useRef<number | null>(null);
   const isDragging = useRef(false);
   const [shouldRenderVideo, setShouldRenderVideo] = useState(false);
-  const [activeSlide, setActiveSlide] = useState(0);
-  const [dragOffsetPx, setDragOffsetPx] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [dragOffsetPercent, setDragOffsetPercent] = useState(0);
+  const [missingVideos, setMissingVideos] = useState<Record<string, boolean>>({});
   const prefersReducedMotion = usePrefersReducedMotion();
 
   const goToSlide = (index: number) => {
-    const total = featuredVideos.length;
-    const normalized = ((index % total) + total) % total;
-    setActiveSlide(normalized);
+    const maxIndex = featuredVideos.length - 1;
+    const clamped = Math.max(0, Math.min(index, maxIndex));
+    setActiveIndex(clamped);
   };
 
   const goToPreviousSlide = () => {
-    goToSlide(activeSlide - 1);
+    goToSlide(activeIndex - 1);
   };
 
   const goToNextSlide = () => {
-    goToSlide(activeSlide + 1);
+    goToSlide(activeIndex + 1);
   };
 
   useEffect(() => {
@@ -126,7 +128,7 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
         return;
       }
 
-      const shouldPlay = index === activeSlide && !prefersReducedMotion;
+      const shouldPlay = index === activeIndex && !prefersReducedMotion;
 
       if (!shouldPlay) {
         video.pause();
@@ -140,7 +142,7 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
         });
       }
     });
-  }, [activeSlide, prefersReducedMotion, shouldRenderVideo]);
+  }, [activeIndex, prefersReducedMotion, shouldRenderVideo]);
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     pointerStartX.current = event.clientX;
@@ -152,7 +154,13 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
       return;
     }
 
-    setDragOffsetPx(event.clientX - pointerStartX.current);
+    const viewportWidth = carouselViewportRef.current?.clientWidth ?? 0;
+    if (viewportWidth <= 0) {
+      return;
+    }
+
+    const deltaX = event.clientX - pointerStartX.current;
+    setDragOffsetPercent((deltaX / viewportWidth) * 100);
   };
 
   const finishSwipe = (endX: number) => {
@@ -171,7 +179,7 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
 
     pointerStartX.current = null;
     isDragging.current = false;
-    setDragOffsetPx(0);
+    setDragOffsetPercent(0);
   };
 
   const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -181,7 +189,7 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
   const handlePointerCancel = () => {
     pointerStartX.current = null;
     isDragging.current = false;
-    setDragOffsetPx(0);
+    setDragOffsetPercent(0);
   };
 
   return (
@@ -196,9 +204,10 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
 
         <Reveal>
           <article className="mb-5 overflow-hidden rounded-2xl border border-white/10 bg-black/30 shadow-lg shadow-black/30 backdrop-blur">
-            <div ref={videoMountRef} className="relative aspect-video overflow-hidden">
+            <div ref={videoMountRef} className="relative mx-auto aspect-[9/16] w-full max-w-sm overflow-hidden">
               {shouldRenderVideo ? (
                 <div
+                  ref={carouselViewportRef}
                   className="group relative h-full w-full touch-pan-y"
                   onPointerDown={handlePointerDown}
                   onPointerMove={handlePointerMove}
@@ -207,32 +216,41 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                   onPointerLeave={handlePointerCancel}
                 >
                   <div
-                    className="flex h-full"
+                    className="flex h-full flex-row flex-nowrap"
                     style={{
-                      width: `${featuredVideos.length * 100}%`,
-                      transform: `translateX(calc(${-activeSlide * (100 / featuredVideos.length)}% + ${dragOffsetPx}px))`,
+                      transform: `translateX(calc(${-activeIndex * 100}% + ${dragOffsetPercent}%))`,
                       transition: prefersReducedMotion || isDragging.current ? "none" : "transform 260ms ease-out",
                     }}
                   >
                     {featuredVideos.map((video, index) => (
-                      <video
-                        key={video.id}
-                        ref={(node) => {
-                          videoRefs.current[index] = node;
-                        }}
-                        className="h-full w-full shrink-0 object-cover"
-                        style={{ objectPosition: video.objectPosition }}
-                        controls={prefersReducedMotion}
-                        loop={!prefersReducedMotion}
-                        muted
-                        playsInline
-                        preload="metadata"
-                        autoPlay={index === activeSlide && !prefersReducedMotion}
-                        poster={video.poster}
-                        aria-label={video.ariaLabel}
-                      >
-                        <source src={video.src} type="video/mp4" />
-                      </video>
+                      <div key={video.id} className="relative h-full w-full flex-[0_0_100%] overflow-hidden">
+                        {missingVideos[video.id] ? (
+                          <div className="flex h-full w-full items-center justify-center bg-zinc-900 px-4 text-center">
+                            <p className="text-sm text-zinc-300">This featured video is unavailable right now.</p>
+                          </div>
+                        ) : (
+                          <video
+                            ref={(node) => {
+                              videoRefs.current[index] = node;
+                            }}
+                            className="h-full w-full object-cover"
+                            style={{ objectPosition: video.objectPosition }}
+                            controls={prefersReducedMotion}
+                            loop={!prefersReducedMotion}
+                            muted
+                            playsInline
+                            preload="metadata"
+                            autoPlay={index === activeIndex && !prefersReducedMotion}
+                            poster={video.poster}
+                            aria-label={video.ariaLabel}
+                            onError={() => {
+                              setMissingVideos((previous) => ({ ...previous, [video.id]: true }));
+                            }}
+                          >
+                            <source src={video.src} type="video/mp4" />
+                          </video>
+                        )}
+                      </div>
                     ))}
                   </div>
 
@@ -260,9 +278,9 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                         key={`${video.id}-dot`}
                         type="button"
                         onClick={() => goToSlide(index)}
-                        className={`h-1.5 w-1.5 rounded-full transition ${index === activeSlide ? "bg-white" : "bg-white/45 hover:bg-white/70"}`}
+                        className={`h-1.5 w-1.5 rounded-full transition ${index === activeIndex ? "bg-white" : "bg-white/45 hover:bg-white/70"}`}
                         aria-label={`Show featured video ${index + 1}`}
-                        aria-current={index === activeSlide}
+                        aria-current={index === activeIndex}
                       />
                     ))}
                   </div>
