@@ -14,7 +14,7 @@ export type DailySchedule = {
 };
 
 export const OPENING_HOURS: Record<WeekDay, DailySchedule> = {
-  monday: { open: "10:00", close: "19:00" },
+  monday: { open: "00:00", close: "00:00", closed: true },
   tuesday: { open: "10:00", close: "19:00" },
   wednesday: { open: "10:00", close: "19:00" },
   thursday: { open: "10:00", close: "20:00" },
