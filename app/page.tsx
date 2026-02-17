@@ -8,7 +8,7 @@ import Footer from "../components/Footer";
 import { getScheduleForDate } from "../lib/schedule";
 import { SERVICES, getServiceLabel } from "../lib/services";
 import { getShopStatus } from "../lib/status";
-import { premiumButtonClassName } from "../lib/ui";
+import { premiumButtonPrimaryClassName, premiumButtonSecondaryClassName } from "../lib/ui";
 import { createDrukteWhatsappUrl } from "../lib/whatsapp";
 import { PHONE_DISPLAY, PHONE_E164 } from "../lib/config";
 
@@ -50,7 +50,7 @@ export default function HomePage() {
             href={createDrukteWhatsappUrl(getServiceLabel(selectedService))}
             target="_blank"
             rel="noreferrer"
-            className={`${premiumButtonClassName} w-full sm:w-auto`}
+            className={`${premiumButtonPrimaryClassName} w-full sm:w-auto`}
           >
             Check drukte op WhatsApp
           </a>
@@ -58,13 +58,13 @@ export default function HomePage() {
         <Reveal delayMs={180} className="mt-4 flex flex-wrap gap-3">
           <a
             href="#prijzen"
-            className={premiumButtonClassName}
+            className={premiumButtonSecondaryClassName}
           >
             Bekijk prijzen
           </a>
           <a
             href="#gallery-heading"
-            className={premiumButtonClassName}
+            className={premiumButtonSecondaryClassName}
           >
             Bekijk gallery
           </a>
