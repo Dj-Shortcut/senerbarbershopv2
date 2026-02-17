@@ -1,4 +1,6 @@
-export const WHATSAPP_PHONE = "31600000000";
+import { PHONE_E164 } from "./config";
+
+const WHATSAPP_PHONE = PHONE_E164.replace(/\D/g, "");
 
 export function createDrukteMessage(serviceLabel: string) {
   return `Hi Sener Barbershop! Ik wil graag de wachttijd checken voor: ${serviceLabel}.`;
