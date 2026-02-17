@@ -7,6 +7,7 @@ import Reveal from "../components/Reveal";
 import { getScheduleForDate } from "../lib/schedule";
 import { SERVICES, getServiceLabel } from "../lib/services";
 import { getShopStatus } from "../lib/status";
+import { premiumButtonClassName } from "../lib/ui";
 import { createDrukteWhatsappUrl } from "../lib/whatsapp";
 
 const facts = [
@@ -47,7 +48,7 @@ export default function HomePage() {
             href={createDrukteWhatsappUrl(getServiceLabel(selectedService))}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex w-full items-center justify-center rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-black transition hover:opacity-90 sm:w-auto"
+            className={`${premiumButtonClassName} w-full sm:w-auto`}
           >
             Check drukte op WhatsApp
           </a>
@@ -55,13 +56,13 @@ export default function HomePage() {
         <Reveal delayMs={180} className="mt-4 flex flex-wrap gap-3">
           <a
             href="#prijzen"
-            className="rounded-xl bg-brand-700 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-800"
+            className={premiumButtonClassName}
           >
             Bekijk prijzen
           </a>
           <a
             href="#gallery-heading"
-            className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:border-slate-400"
+            className={premiumButtonClassName}
           >
             Bekijk gallery
           </a>
