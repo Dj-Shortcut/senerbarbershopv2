@@ -5,6 +5,14 @@ import { SERVICES, type Service } from "../lib/services";
 
 const sectionDefinitions = [
   {
+    key: "combo",
+    heading: "Combo",
+    itemIds: ["knippen-baard"],
+    descriptions: {
+      "knippen-baard": "Volledige grooming in één sessie.",
+    },
+  },
+  {
     key: "knippen",
     heading: "Knippen",
     itemIds: ["knippen", "tondeuse", "haarwassen"],
@@ -21,14 +29,6 @@ const sectionDefinitions = [
     descriptions: {
       baard: "Contouren en verzorgde afwerking.",
       wax: "Neus of oren met zachte hete wax.",
-    },
-  },
-  {
-    key: "combo",
-    heading: "Combo",
-    itemIds: ["knippen-baard"],
-    descriptions: {
-      "knippen-baard": "Volledige grooming in één sessie.",
     },
   },
   {
