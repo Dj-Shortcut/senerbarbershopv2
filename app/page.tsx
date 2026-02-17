@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Gallery from "../components/Gallery";
 import PricesList from "../components/PricesList";
 import Reveal from "../components/Reveal";
@@ -22,10 +22,59 @@ export default function HomePage() {
   const status = useMemo(() => getShopStatus(new Date()), []);
   const selectedService = SERVICES[0];
   const today = new Date().getDay();
+  const heroRef = useRef<HTMLElement | null>(null);
+  const [showStickyCta, setShowStickyCta] = useState(false);
+
+  useEffect(() => {
+    const heroNode = heroRef.current;
+    if (!heroNode || typeof window === "undefined") {
+      return;
+    }
+
+    const mobileQuery = window.matchMedia("(max-width: 639px)");
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const updateVisibleOnScroll = () => {
+      if (!mobileQuery.matches) {
+        setShowStickyCta(false);
+        return;
+      }
+
+      setShowStickyCta(window.scrollY > 240);
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!mobileQuery.matches) {
+          setShowStickyCta(false);
+          return;
+        }
+
+        setShowStickyCta(!entry.isIntersecting || window.scrollY > 240);
+      },
+      { threshold: 0.08 },
+    );
+
+    observer.observe(heroNode);
+    updateVisibleOnScroll();
+
+    window.addEventListener("scroll", updateVisibleOnScroll, { passive: true });
+    mobileQuery.addEventListener("change", updateVisibleOnScroll);
+
+    if (prefersReducedMotion) {
+      setShowStickyCta(window.scrollY > 240);
+    }
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", updateVisibleOnScroll);
+      mobileQuery.removeEventListener("change", updateVisibleOnScroll);
+    };
+  }, []);
 
   return (
-    <main className="pb-20">
-      <section className="mx-auto max-w-6xl px-4 pb-10 pt-14 sm:px-6 lg:px-8">
+    <main className={`pb-20 ${showStickyCta ? "pb-[calc(7.25rem+env(safe-area-inset-bottom))] sm:pb-20" : ""}`}>
+      <section ref={heroRef} className="mx-auto max-w-6xl px-4 pb-10 pt-14 sm:px-6 lg:px-8">
         <Reveal>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-300">The Sener Barber</p>
         </Reveal>
@@ -126,6 +175,21 @@ export default function HomePage() {
       <Gallery />
       <PricesList />
       <Footer />
+
+      <div className="sticky-mobile-cta sm:hidden" data-visible={showStickyCta ? "true" : "false"}>
+        <a
+          href={createDrukteWhatsappUrl(getServiceLabel(selectedService))}
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Check drukte via WhatsApp"
+          className="ios-glass-pill ios-glass-pill--primary"
+        >
+          Check drukte
+        </a>
+        <a href="#prijzen" className="ios-glass-pill">
+          Prijzen
+        </a>
+      </div>
     </main>
   );
 }

@@ -164,6 +164,38 @@ body {
   transform: translateY(0) scale(1);
 }
 
+
+.sticky-mobile-cta {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 40;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  background: linear-gradient(to top, rgba(9, 9, 11, 0.92), rgba(9, 9, 11, 0.2) 70%, transparent);
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition: opacity 260ms ease-out, transform 260ms ease-out;
+}
+
+.sticky-mobile-cta[data-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.sticky-mobile-cta .ios-glass-pill {
+  height: 44px;
+}
+
+.sticky-mobile-cta .ios-glass-pill--primary {
+  min-width: 0;
+}
+
 @layer components {
   .ios-glass-pill {
     @apply inline-flex h-11 items-center justify-center gap-2 rounded-full border px-5 text-sm font-semibold text-zinc-100 shadow-sm shadow-black/20 transition duration-200 ease-out;
@@ -216,6 +248,14 @@ body {
 
   .price-section-card.reveal--visible .price-row {
     transition-delay: 0ms;
+  }
+
+  .sticky-mobile-cta {
+    transform: none;
+  }
+
+  .sticky-mobile-cta[data-visible="true"] {
+    transition: none;
   }
 
   .price-row:hover .price-badge,
