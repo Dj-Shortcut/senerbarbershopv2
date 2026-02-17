@@ -25,6 +25,66 @@ body {
   transition: transform 300ms ease-out, opacity 300ms ease-out;
 }
 
+.price-section-card {
+  position: relative;
+}
+
+.price-section-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(244, 244, 245, 0.9), rgba(244, 244, 245, 0.35));
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 420ms ease-out;
+}
+
+.price-section-card.reveal--visible::before {
+  transform: scaleY(1);
+}
+
+.price-row {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 260ms ease-out, transform 260ms ease-out, background-color 180ms ease-out;
+}
+
+.price-section-card.reveal--visible .price-row {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: var(--stagger, 0ms);
+}
+
+.price-row[data-active="true"] {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.price-row[data-active="false"]:hover,
+.price-row[data-active="false"]:active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.price-row__title {
+  transition: color 180ms ease-out;
+}
+
+.price-row:hover .price-row__title,
+.price-row:active .price-row__title {
+  color: rgb(244 244 245);
+}
+
+.price-badge {
+  transition: transform 180ms ease-out;
+}
+
+.price-row:hover .price-badge,
+.price-row:active .price-badge {
+  transform: translateX(-3px);
+}
+
 @layer components {
   .ios-glass-pill {
     @apply inline-flex h-11 items-center justify-center gap-2 rounded-full border px-5 text-sm font-semibold text-zinc-100 shadow-sm shadow-black/20 transition duration-200 ease-out;
@@ -54,12 +114,30 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
+  .reveal,
+  .price-row {
     opacity: 1;
     transform: none;
   }
 
-  .reveal--visible {
+  .reveal--visible,
+  .price-row,
+  .price-badge,
+  .price-row__title,
+  .price-section-card::before {
     transition: none;
+  }
+
+  .price-section-card::before {
+    transform: scaleY(1);
+  }
+
+  .price-section-card.reveal--visible .price-row {
+    transition-delay: 0ms;
+  }
+
+  .price-row:hover .price-badge,
+  .price-row:active .price-badge {
+    transform: none;
   }
 }
