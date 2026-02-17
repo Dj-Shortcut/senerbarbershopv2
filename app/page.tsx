@@ -8,7 +8,6 @@ import Footer from "../components/Footer";
 import { getScheduleForDate } from "../lib/schedule";
 import { SERVICES, getServiceLabel } from "../lib/services";
 import { getShopStatus } from "../lib/status";
-import { premiumButtonPrimaryClassName, premiumButtonSecondaryClassName } from "../lib/ui";
 import { createDrukteWhatsappUrl } from "../lib/whatsapp";
 
 const facts = [
@@ -50,23 +49,27 @@ export default function HomePage() {
             href={createDrukteWhatsappUrl(getServiceLabel(selectedService))}
             target="_blank"
             rel="noreferrer"
-            className={`${premiumButtonPrimaryClassName} w-full sm:w-auto`}
+            className="ios-glass-pill ios-glass-pill--primary w-full sm:w-auto"
           >
-            Check drukte op WhatsApp
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.88 19.88 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.88 19.88 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.77.62 2.6a2 2 0 0 1-.45 2.11L8 9.91a16 16 0 0 0 6.09 6.09l1.48-1.23a2 2 0 0 1 2.11-.45c.83.29 1.7.5 2.6.62A2 2 0 0 1 22 16.92z"/></svg>
+            <span>Check drukte op WhatsApp</span>
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </Reveal>
         <Reveal delayMs={180} className="mt-4 flex flex-wrap gap-3">
           <a
             href="#prijzen"
-            className={`${premiumButtonSecondaryClassName} min-w-[11rem] flex-1`}
+            className="ios-glass-pill min-w-[11rem] flex-1"
           >
-            Bekijk prijzen
+            <span>Bekijk prijzen</span>
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
           <a
             href="#gallery-heading"
-            className={`${premiumButtonSecondaryClassName} min-w-[11rem] flex-1`}
+            className="ios-glass-pill min-w-[11rem] flex-1"
           >
-            Bekijk galerij
+            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M3 7h4l2-2h6l2 2h4v12H3z"/><circle cx="12" cy="13" r="4"/></svg>
+            <span>Bekijk galerij</span>
           </a>
         </Reveal>
       </section>
