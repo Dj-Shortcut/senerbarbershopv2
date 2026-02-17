@@ -42,7 +42,7 @@ export default function HomePage() {
         </Reveal>
         <Reveal delayMs={120}>
           <p className="mt-5 max-w-2xl text-lg text-zinc-300">
-            Boek je afspraak online en stap binnen voor een look die past bij jouw stijl.
+          Stap binnen voor een look die past bij jouw stijl.
           </p>
         </Reveal>
         <Reveal delayMs={160} className="mt-6">
