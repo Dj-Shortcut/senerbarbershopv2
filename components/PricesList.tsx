@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { SERVICES, getServiceLabel } from "../lib/services";
+import { premiumButtonClassName } from "../lib/ui";
 import { createDrukteMessage, createDrukteWhatsappUrl } from "../lib/whatsapp";
 
 export default function PricesList() {
@@ -41,7 +42,7 @@ export default function PricesList() {
           href={createDrukteWhatsappUrl(getServiceLabel(selectedService))}
           target="_blank"
           rel="noreferrer"
-          className="mt-4 inline-flex rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-black transition hover:opacity-90"
+          className={`${premiumButtonClassName} mt-4`}
         >
           Check drukte via WhatsApp
         </a>
