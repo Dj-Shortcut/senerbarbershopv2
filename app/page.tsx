@@ -28,17 +28,17 @@ export default function HomePage() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-brand-600">Sener Barbershop</p>
         </Reveal>
         <Reveal delayMs={40}>
-          <span className={`mt-4 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${status.isOpen ? "bg-emerald-100 text-emerald-800" : "bg-slate-200 text-slate-700"}`}>
+          <span className={`mt-4 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${status.isOpen ? "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30" : "bg-zinc-800 text-zinc-300 ring-1 ring-zinc-700"}`}>
             {status.label}
           </span>
         </Reveal>
         <Reveal delayMs={60}>
-          <h1 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+          <h1 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-zinc-50 sm:text-5xl">
             Strakke cuts, consistente kwaliteit en een rustige barber ervaring.
           </h1>
         </Reveal>
         <Reveal delayMs={120}>
-          <p className="mt-5 max-w-2xl text-lg text-slate-700">
+          <p className="mt-5 max-w-2xl text-lg text-zinc-300">
             Boek je afspraak online en stap binnen voor een look die past bij jouw stijl.
           </p>
         </Reveal>
@@ -61,7 +61,7 @@ export default function HomePage() {
           </a>
           <a
             href="#gallery-heading"
-            className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-900 transition hover:border-slate-400"
+            className="rounded-xl border border-zinc-700 bg-zinc-900 px-5 py-3 text-sm font-semibold text-zinc-100 transition hover:border-zinc-500"
           >
             Bekijk gallery
           </a>
@@ -72,9 +72,9 @@ export default function HomePage() {
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {facts.map((fact, index) => (
             <Reveal key={fact.label} delayMs={index * 50}>
-              <article className="rounded-2xl border border-slate-200 bg-white p-5">
-                <p className="text-3xl font-bold text-slate-900">{fact.value}</p>
-                <p className="mt-1 text-sm text-slate-600">{fact.label}</p>
+              <article className="rounded-2xl border border-zinc-800 bg-zinc-900/80 p-5 backdrop-blur">
+                <p className="text-3xl font-bold text-zinc-50">{fact.value}</p>
+                <p className="mt-1 text-sm text-zinc-400">{fact.label}</p>
               </article>
             </Reveal>
           ))}
@@ -82,8 +82,8 @@ export default function HomePage() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-4 sm:px-6 lg:px-8">
-        <h2 className="text-xl font-semibold text-slate-900">Openingstijden</h2>
-        <div className="mt-3 grid gap-2 rounded-2xl border border-slate-200 bg-white p-4 sm:grid-cols-2">
+        <h2 className="text-xl font-semibold text-zinc-100">Openingstijden</h2>
+        <div className="mt-3 grid gap-2 rounded-2xl border border-zinc-800 bg-zinc-900/80 p-4 backdrop-blur sm:grid-cols-2">
           {dayLabels.map((label, dayIndex) => {
             const currentDate = new Date();
             const offset = dayIndex - currentDate.getDay();
@@ -93,8 +93,8 @@ export default function HomePage() {
 
             return (
               <div key={label} className="flex items-center justify-between text-sm">
-                <span className="font-medium text-slate-700">{label}</span>
-                <span className="text-slate-600">
+                <span className="font-medium text-zinc-300">{label}</span>
+                <span className="text-zinc-400">
                   {daySchedule.closed ? "Gesloten" : `${daySchedule.open} - ${daySchedule.close}`}
                 </span>
               </div>
