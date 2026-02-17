@@ -89,25 +89,34 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 py-4 sm:px-6 lg:px-8">
-        <h2 className="text-xl font-semibold text-zinc-100">Openingstijden</h2>
-        <div className="mt-3 grid gap-2 rounded-2xl border border-zinc-800 bg-zinc-900/80 p-4 backdrop-blur sm:grid-cols-2">
-          {dayLabels.map((label, dayIndex) => {
-            const currentDate = new Date();
-            const offset = dayIndex - currentDate.getDay();
-            const date = new Date(currentDate);
-            date.setDate(currentDate.getDate() + offset);
-            const daySchedule = getScheduleForDate(date);
+      <section className="mx-auto max-w-6xl py-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl px-4">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-xl font-semibold text-zinc-100">Openingstijden</h2>
+            <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${status.isOpen ? "border-emerald-500/20 bg-emerald-500/15 text-emerald-200" : "border-white/15 bg-white/5 text-white/60"}`}>
+              {status.isOpen ? "Open" : "Gesloten"}
+            </span>
+          </div>
+          <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 px-4 backdrop-blur">
+            <div className="divide-y divide-white/10">
+              {dayLabels.map((label, dayIndex) => {
+                const currentDate = new Date();
+                const offset = dayIndex - currentDate.getDay();
+                const date = new Date(currentDate);
+                date.setDate(currentDate.getDate() + offset);
+                const daySchedule = getScheduleForDate(date);
 
-            return (
-              <div key={label} className="flex items-center justify-between text-sm">
-                <span className="font-medium text-zinc-300">{label}</span>
-                <span className="text-zinc-400">
-                  {daySchedule.closed ? "Gesloten" : `${daySchedule.open} - ${daySchedule.close}`}
-                </span>
-              </div>
-            );
-          })}
+                return (
+                  <div key={label} className="grid grid-cols-1 gap-y-1 py-3 text-sm md:grid-cols-[80px_1fr] md:items-center md:gap-x-4 md:gap-y-0">
+                    <span className="text-white/90 font-semibold">{label}</span>
+                    <span className="text-white/80 tabular-nums md:text-right">
+                      {daySchedule.closed ? "Gesloten" : `${daySchedule.open} - ${daySchedule.close}`}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </section>
 
