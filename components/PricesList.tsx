@@ -42,7 +42,7 @@ export default function PricesList() {
           href={createDrukteWhatsappUrl(getServiceLabel(selectedService))}
           target="_blank"
           rel="noreferrer"
-          className={`${premiumButtonClassName} mt-4`}
+          className="mt-4 inline-flex text-xs font-medium text-slate-500 underline-offset-2 transition hover:text-slate-700 hover:underline"
         >
           Check drukte via WhatsApp
         </a>
