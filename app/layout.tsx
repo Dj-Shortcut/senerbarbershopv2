@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { BUSINESS_NAME, LOCAL_BUSINESS_SCHEMA, SEO_DESCRIPTION, SEO_TITLE, SITE_URL } from "../lib/seo";
+import { LOCAL_BUSINESS_SCHEMA } from '../lib/seo';
 
 export const metadata: Metadata = {
   title: 'The Sener Barber',
-  description: 'The Sener Barber in Ninove. Walk-ins welkom voor cuts en baardverzorging.'
+  description: 'The Sener Barber in Ninove. Walk-ins welkom voor cuts en baardverzorging.',
+  icons: {
+    icon: '/icon.svg'
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
