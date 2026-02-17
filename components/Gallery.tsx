@@ -2,8 +2,26 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 
 import Reveal from "./Reveal";
+
+const featuredVideos = [
+  {
+    id: "featured-clip",
+    src: "/assets/video/featured-clip.mp4",
+    poster: "/assets/images/signature-fade.jpg",
+    objectPosition: "50% 15%",
+    ariaLabel: "Featured haircut clip",
+  },
+  {
+    id: "hero-alt-bg",
+    src: "/assets/video/hero-alt-bg.mp4",
+    poster: "/assets/images/classic-cut.jpg",
+    objectPosition: "50% 20%",
+    ariaLabel: "Alternative featured haircut clip",
+  },
+] as const;
 
 export interface GalleryItem {
   id: string;
@@ -52,8 +70,27 @@ function usePrefersReducedMotion() {
 
 export default function Gallery({ items = defaultItems, className = "" }: GalleryProps) {
   const videoMountRef = useRef<HTMLDivElement | null>(null);
+  const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
+  const pointerStartX = useRef<number | null>(null);
+  const isDragging = useRef(false);
   const [shouldRenderVideo, setShouldRenderVideo] = useState(false);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [dragOffsetPx, setDragOffsetPx] = useState(0);
   const prefersReducedMotion = usePrefersReducedMotion();
+
+  const goToSlide = (index: number) => {
+    const total = featuredVideos.length;
+    const normalized = ((index % total) + total) % total;
+    setActiveSlide(normalized);
+  };
+
+  const goToPreviousSlide = () => {
+    goToSlide(activeSlide - 1);
+  };
+
+  const goToNextSlide = () => {
+    goToSlide(activeSlide + 1);
+  };
 
   useEffect(() => {
     const node = videoMountRef.current;
@@ -79,6 +116,74 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (!shouldRenderVideo) {
+      return;
+    }
+
+    videoRefs.current.forEach((video, index) => {
+      if (!video) {
+        return;
+      }
+
+      const shouldPlay = index === activeSlide && !prefersReducedMotion;
+
+      if (!shouldPlay) {
+        video.pause();
+        return;
+      }
+
+      const playPromise = video.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => {
+          // Ignore autoplay restrictions; user interaction via controls can still play.
+        });
+      }
+    });
+  }, [activeSlide, prefersReducedMotion, shouldRenderVideo]);
+
+  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    pointerStartX.current = event.clientX;
+    isDragging.current = true;
+  };
+
+  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!isDragging.current || pointerStartX.current === null || prefersReducedMotion) {
+      return;
+    }
+
+    setDragOffsetPx(event.clientX - pointerStartX.current);
+  };
+
+  const finishSwipe = (endX: number) => {
+    if (pointerStartX.current === null) {
+      return;
+    }
+
+    const deltaX = endX - pointerStartX.current;
+    const threshold = 50;
+
+    if (deltaX <= -threshold) {
+      goToNextSlide();
+    } else if (deltaX >= threshold) {
+      goToPreviousSlide();
+    }
+
+    pointerStartX.current = null;
+    isDragging.current = false;
+    setDragOffsetPx(0);
+  };
+
+  const handlePointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
+    finishSwipe(event.clientX);
+  };
+
+  const handlePointerCancel = () => {
+    pointerStartX.current = null;
+    isDragging.current = false;
+    setDragOffsetPx(0);
+  };
+
   return (
     <section className={`w-full py-12 sm:py-16 ${className}`.trim()} aria-labelledby="gallery-heading">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -91,21 +196,77 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
 
         <Reveal>
           <article className="mb-5 overflow-hidden rounded-2xl border border-white/10 bg-black/30 shadow-lg shadow-black/30 backdrop-blur">
-            <div ref={videoMountRef} className="aspect-video">
+            <div ref={videoMountRef} className="relative aspect-video overflow-hidden">
               {shouldRenderVideo ? (
-                <video
-                  className="h-full w-full object-cover"
-                  style={{ objectPosition: "50% 20%" }}
-                  controls={prefersReducedMotion}
-                  loop
-                  muted
-                  playsInline
-                  preload="metadata"
-                  autoPlay={!prefersReducedMotion}
-                  aria-label="Featured clip"
+                <div
+                  className="group relative h-full w-full touch-pan-y"
+                  onPointerDown={handlePointerDown}
+                  onPointerMove={handlePointerMove}
+                  onPointerUp={handlePointerUp}
+                  onPointerCancel={handlePointerCancel}
+                  onPointerLeave={handlePointerCancel}
                 >
-                  <source src="/assets/video/featured-clip.mp4" type="video/mp4" />
-                </video>
+                  <div
+                    className="flex h-full"
+                    style={{
+                      width: `${featuredVideos.length * 100}%`,
+                      transform: `translateX(calc(${-activeSlide * (100 / featuredVideos.length)}% + ${dragOffsetPx}px))`,
+                      transition: prefersReducedMotion || isDragging.current ? "none" : "transform 260ms ease-out",
+                    }}
+                  >
+                    {featuredVideos.map((video, index) => (
+                      <video
+                        key={video.id}
+                        ref={(node) => {
+                          videoRefs.current[index] = node;
+                        }}
+                        className="h-full w-full shrink-0 object-cover"
+                        style={{ objectPosition: video.objectPosition }}
+                        controls={prefersReducedMotion}
+                        loop={!prefersReducedMotion}
+                        muted
+                        playsInline
+                        preload="metadata"
+                        autoPlay={index === activeSlide && !prefersReducedMotion}
+                        poster={video.poster}
+                        aria-label={video.ariaLabel}
+                      >
+                        <source src={video.src} type="video/mp4" />
+                      </video>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={goToPreviousSlide}
+                    className="absolute left-3 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/35 text-zinc-100 backdrop-blur transition hover:bg-black/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 md:flex"
+                    aria-label="Previous featured video"
+                  >
+                    <span aria-hidden="true">←</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={goToNextSlide}
+                    className="absolute right-3 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/35 text-zinc-100 backdrop-blur transition hover:bg-black/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 md:flex"
+                    aria-label="Next featured video"
+                  >
+                    <span aria-hidden="true">→</span>
+                  </button>
+
+                  <div className="absolute bottom-3 left-1/2 hidden -translate-x-1/2 items-center gap-2 rounded-full bg-black/35 px-2 py-1 backdrop-blur md:flex">
+                    {featuredVideos.map((video, index) => (
+                      <button
+                        key={`${video.id}-dot`}
+                        type="button"
+                        onClick={() => goToSlide(index)}
+                        className={`h-1.5 w-1.5 rounded-full transition ${index === activeSlide ? "bg-white" : "bg-white/45 hover:bg-white/70"}`}
+                        aria-label={`Show featured video ${index + 1}`}
+                        aria-current={index === activeSlide}
+                      />
+                    ))}
+                  </div>
+                </div>
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-zinc-900 px-4 text-center">
                   <p className="text-sm text-zinc-300">Featured clip loads as you approach this section.</p>
