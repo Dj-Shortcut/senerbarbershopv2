@@ -319,9 +319,11 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                       loading="lazy"
                       decoding="async"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-black/0 transition group-hover:from-black/45" />
-                    <div className="absolute bottom-0 left-0 right-0 m-3 rounded-lg border border-white/10 bg-black/35 px-3 py-2 backdrop-blur-sm sm:m-4">
-                      <p className="text-sm font-medium text-zinc-100">{item.title}</p>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/10 to-black/0 transition group-hover:from-black/20" />
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/65 to-black/0 px-[clamp(0.5rem,1.8vw,1rem)] pb-[clamp(0.5rem,1.9vw,1rem)] pt-[clamp(1.1rem,4vw,2rem)] backdrop-blur-[1px]">
+                      <p className="[display:-webkit-box] overflow-hidden text-[clamp(12px,2.6vw,16px)] font-semibold leading-tight text-zinc-100 [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [word-break:normal] [overflow-wrap:anywhere] [hyphens:auto]">
+                        {item.title}
+                      </p>
                     </div>
                   </div>
                 </article>
