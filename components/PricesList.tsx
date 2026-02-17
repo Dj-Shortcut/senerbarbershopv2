@@ -1,14 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { SERVICES, getServiceLabel } from "../lib/services";
-import { premiumButtonClassName } from "../lib/ui";
-import { createDrukteMessage, createDrukteWhatsappUrl } from "../lib/whatsapp";
+import { useState } from "react";
+import { SERVICES } from "../lib/services";
 
 export default function PricesList() {
   const [selectedService, setSelectedService] = useState(SERVICES[0]);
-
-  const whatsappMessage = useMemo(() => createDrukteMessage(getServiceLabel(selectedService)), [selectedService]);
 
   return (
     <section id="prijzen" className="py-8">
@@ -37,16 +33,6 @@ export default function PricesList() {
             })}
           </div>
         </article>
-
-        <a
-          href={createDrukteWhatsappUrl(getServiceLabel(selectedService))}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-4 inline-flex text-xs font-medium text-slate-500 underline-offset-2 transition hover:text-slate-700 hover:underline"
-        >
-          Check drukte via WhatsApp
-        </a>
-        <p className="mt-2 text-xs text-zinc-500">Template preview: {whatsappMessage}</p>
       </div>
     </section>
   );
