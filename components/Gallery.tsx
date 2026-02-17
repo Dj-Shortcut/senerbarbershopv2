@@ -257,7 +257,7 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                   <button
                     type="button"
                     onClick={goToPreviousSlide}
-                    className="absolute left-3 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/35 text-zinc-100 backdrop-blur transition hover:bg-black/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 md:flex"
+                    className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/45 text-zinc-100 shadow-md shadow-black/40 backdrop-blur transition hover:bg-black/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
                     aria-label="Previous featured video"
                   >
                     <span aria-hidden="true">←</span>
@@ -266,13 +266,13 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                   <button
                     type="button"
                     onClick={goToNextSlide}
-                    className="absolute right-3 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/35 text-zinc-100 backdrop-blur transition hover:bg-black/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 md:flex"
+                    className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-black/45 text-zinc-100 shadow-md shadow-black/40 backdrop-blur transition hover:bg-black/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
                     aria-label="Next featured video"
                   >
                     <span aria-hidden="true">→</span>
                   </button>
 
-                  <div className="absolute bottom-3 left-1/2 hidden -translate-x-1/2 items-center gap-2 rounded-full bg-black/35 px-2 py-1 backdrop-blur md:flex">
+                  <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/35 px-2 py-1 backdrop-blur">
                     {featuredVideos.map((video, index) => (
                       <button
                         key={`${video.id}-dot`}

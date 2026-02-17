@@ -10,7 +10,6 @@ import { SERVICES, getServiceLabel } from "../lib/services";
 import { getShopStatus } from "../lib/status";
 import { premiumButtonPrimaryClassName, premiumButtonSecondaryClassName } from "../lib/ui";
 import { createDrukteWhatsappUrl } from "../lib/whatsapp";
-import { PHONE_DISPLAY, PHONE_E164 } from "../lib/config";
 
 const facts = [
   { label: "Jaren ervaring", value: "10+" },
@@ -69,11 +68,6 @@ export default function HomePage() {
           >
             Bekijk gallery
           </a>
-        </Reveal>
-        <Reveal delayMs={220}>
-          <p className="mt-4 text-sm text-zinc-300">
-            Bel ons: <a href={`tel:${PHONE_E164}`} className="font-semibold text-zinc-100 underline decoration-white/40 underline-offset-4">{PHONE_DISPLAY}</a>
-          </p>
         </Reveal>
       </section>
 

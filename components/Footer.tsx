@@ -28,18 +28,14 @@ export default function Footer() {
             <Phone size={15} />
             <span>{PHONE_DISPLAY}</span>
           </a>
-          <p className="inline-flex items-center gap-2 text-white/75">
-            <MapPin size={15} />
-            <span>{CONTACT_CONFIG.address.label}</span>
-          </p>
           <a
             href={CONTACT_CONFIG.address.mapsHref}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener"
             className="inline-flex items-center gap-2 text-white/85 transition hover:text-white"
           >
             <MapPin size={15} />
-            <span>Open in Google Maps</span>
+            <span>{CONTACT_CONFIG.address.label}</span>
           </a>
           <a
             href={FOOTER_CONFIG.projectRepoHref}
