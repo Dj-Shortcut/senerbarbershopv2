@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { BUSINESS_NAME, LOCAL_BUSINESS_SCHEMA, SEO_DESCRIPTION, SITE_URL } from "../lib/seo";
+import { BUSINESS_NAME, SEO_DESCRIPTION, SITE_URL } from "../lib/seo";
+import { getLocalBusinessSchema } from "../lib/schema/localBusiness";
+
+const ogImage = "/og-image";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -9,6 +12,20 @@ export const metadata: Metadata = {
     template: `%s | ${BUSINESS_NAME}`,
   },
   description: SEO_DESCRIPTION,
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     type: "website",
     locale: "nl_BE",
@@ -18,18 +35,18 @@ export const metadata: Metadata = {
     description: SEO_DESCRIPTION,
     images: [
       {
-        url: "/icon.svg",
-        width: 512,
-        height: 512,
-        alt: `${BUSINESS_NAME} logo`,
+        url: ogImage,
+        width: 1200,
+        height: 630,
+        alt: `${BUSINESS_NAME} social preview`,
       },
     ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: `${BUSINESS_NAME} | Barbier in Ninove`,
     description: SEO_DESCRIPTION,
-    images: ["/icon.svg"],
+    images: [ogImage],
   },
   icons: {
     icon: "/icon.svg",
@@ -45,7 +62,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a href="#main-content" className="skip-link">Ga naar inhoud</a>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(LOCAL_BUSINESS_SCHEMA) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(getLocalBusinessSchema()) }}
         />
         {children}
       </body>
