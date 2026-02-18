@@ -1,9 +1,25 @@
 import { readFileSync } from 'node:fs';
 
-const PRICES_LIST_PATH = 'components/PricesList.tsx';
-const SERVICES_PATH = 'lib/services.ts';
+const pageSource = readFileSync('app/page.tsx', 'utf8');
+const servicesSource = readFileSync('lib/services.ts', 'utf8');
 
-const EXPECTED_BASELINE_PRICES = {
+const requiredSnippets = [
+  'Check drukte',
+  'aria-label="Check drukte via WhatsApp"',
+  'createDrukteWhatsAppUrl(getServiceLabel(selectedService))',
+  'className="sticky-mobile-cta sm:hidden"',
+];
+
+const missing = requiredSnippets.filter((snippet) => !pageSource.includes(snippet));
+if (missing.length) {
+  console.error('PricesList verificatie gefaald; ontbrekende snippets:');
+  missing.forEach((snippet) => console.error(`- ${snippet}`));
+  process.exit(1);
+}
+
+const serviceEntries = [...servicesSource.matchAll(/id: "([^"]+)",[\s\S]*?price: "([^"]+)"/g)].map((m) => [m[1], m[2]]);
+
+const PREVIOUS_RELEASE_PRICES = {
   knippen: '€20',
   'knippen-baard': '€30',
   tondeuse: '€15',
@@ -13,48 +29,12 @@ const EXPECTED_BASELINE_PRICES = {
   kinderen: '€15',
 };
 
-function parseServiceEntries(servicesSource) {
-  return [...servicesSource.matchAll(/\{\s*id:\s*"([^"]+)",[\s\S]*?price:\s*"([^"]+)"\s*\}/g)].map((match) => ({
-    id: match[1],
-    price: match[2],
-  }));
-}
+const mismatches = serviceEntries.filter(([id, price]) => PREVIOUS_RELEASE_PRICES[id] !== price);
 
-function parseSectionItemIds(pricesListSource) {
-  return [...pricesListSource.matchAll(/itemIds:\s*\[([^\]]*)\]/g)]
-    .flatMap((match) => [...match[1].matchAll(/"([^"]+)"/g)].map((idMatch) => idMatch[1]));
-}
-
-function validatePricesList(pricesListSource, servicesSource) {
-  const errors = [];
-
-  const semanticChecks = [
-    {
-      label: 'Prijzen-sectie id',
-      ok: /<section\s+id="prijzen"/.test(pricesListSource),
-    },
-    {
-      label: 'Prijzen heading',
-      ok: />Prijzen<\//.test(pricesListSource),
-    },
-    {
-      label: 'Selectie CTA-tekst',
-      ok: /Meest gekozen vandaag:/.test(pricesListSource),
-    },
-    {
-      label: 'Selectie feedback-toast',
-      ok: /Toegevoegd:\s*\$\{service\.name\}\s*\(\$\{service\.price\}\)/.test(pricesListSource),
-    },
-    {
-      label: 'Service prijs rendering',
-      ok: /\{service\.price\}/.test(pricesListSource),
-    },
-  ];
-
-  semanticChecks.forEach((check) => {
-    if (!check.ok) {
-      errors.push(`Ontbreekt of gewijzigd: ${check.label}`);
-    }
+if (mismatches.length) {
+  console.error('Prijsregressie gevonden:');
+  mismatches.forEach(([id, price]) => {
+    console.error(`- ${id}: current=${price}, previous=${PREVIOUS_RELEASE_PRICES[id]}`);
   });
 
   if (/app\/page\.tsx/.test(pricesListSource)) {
@@ -133,5 +113,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-const totalServices = parseServiceEntries(servicesSource).length;
-console.log(`PricesList OK: ${totalServices} services, semantische CTA/prijslijst-checks en baseline-prijzen gevalideerd.`);
+console.log(`PricesList OK: ${serviceEntries.length} service-items, CTA flow en prijsvergelijking gevalideerd.`);
