@@ -73,7 +73,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <main className={`pb-20 ${showStickyCta ? "pb-[calc(7.25rem+env(safe-area-inset-bottom))] sm:pb-20" : ""}`}>
+    <main id="main-content" className={`pb-20 ${showStickyCta ? "pb-[calc(7.25rem+env(safe-area-inset-bottom))] sm:pb-20" : ""}`}>
       <section ref={heroRef} className="mx-auto max-w-6xl px-4 pb-10 pt-14 sm:px-6 lg:px-8">
         <Reveal>
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-300">The Sener Barber</p>
