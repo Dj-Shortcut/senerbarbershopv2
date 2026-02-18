@@ -8,7 +8,7 @@ import Footer from "../components/Footer";
 import { getScheduleForDate } from "../lib/schedule";
 import { SERVICES, getServiceLabel } from "../lib/services";
 import { getShopStatus } from "../lib/status";
-import { createDrukteWhatsappUrl } from "../lib/whatsapp";
+import { createDrukteWhatsAppUrl } from "../lib/whatsapp";
 
 const facts = [
   { label: "Zorgvuldige afwerking", value: "Elke knipbeurt" },
@@ -99,7 +99,7 @@ export default function HomePage() {
         </Reveal>
         <Reveal delayMs={160} className="mt-6">
           <a
-            href={createDrukteWhatsappUrl(getServiceLabel(selectedService))}
+            href={createDrukteWhatsAppUrl(getServiceLabel(selectedService))}
             target="_blank"
             rel="noreferrer"
             aria-label="Check drukte via WhatsApp"
@@ -181,7 +181,7 @@ export default function HomePage() {
 
       <div className="sticky-mobile-cta sm:hidden" data-visible={showStickyCta ? "true" : "false"}>
         <a
-          href={createDrukteWhatsappUrl(getServiceLabel(selectedService))}
+          href={createDrukteWhatsAppUrl(getServiceLabel(selectedService))}
           target="_blank"
           rel="noreferrer"
           aria-label="Check drukte via WhatsApp"
