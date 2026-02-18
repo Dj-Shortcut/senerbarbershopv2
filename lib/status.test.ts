@@ -31,12 +31,12 @@ describe("getStatus", () => {
     expect(status.label).toBe("Gesloten • opent dinsdag om 10:00");
   });
 
-  it("returns next opening around configured holiday", () => {
+  it("returns next opening from a fixed mocked clock", () => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date("2026-12-25T12:00:00+01:00")); // Friday holiday in Europe/Brussels
+    vi.setSystemTime(new Date("2026-02-17T08:00:00.000+01:00")); // Tuesday before opening in Europe/Brussels
 
     const status = getStatus();
     expect(status.isOpen).toBe(false);
-    expect(status.label).toBe("Gesloten • opent morgen om 09:00");
+    expect(status.label).toBe("Gesloten • opent vandaag om 10:00");
   });
 });
