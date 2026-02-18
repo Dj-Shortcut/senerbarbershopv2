@@ -9,10 +9,10 @@ export const PHONE_DISPLAY = "0488 38 38 71";
 export const OPEN_DAYS = ["tuesday", "wednesday", "thursday", "friday", "saturday"] as const;
 
 export const OPEN_HOUR = {
-  tuesday: "10:00",
-  wednesday: "10:00",
-  thursday: "10:00",
-  friday: "10:00",
+  tuesday: "09:00",
+  wednesday: "09:00",
+  thursday: "09:00",
+  friday: "09:00",
   saturday: "09:00",
 } as const;
 
