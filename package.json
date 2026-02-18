@@ -11,7 +11,8 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "preview:checks": "npm run lint && npm run test",
-    "check:a11y": "next lint --dir app --dir components --max-warnings=0"
+    "check:a11y": "next lint --dir app --dir components --max-warnings=0",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "next": "14.2.5",
