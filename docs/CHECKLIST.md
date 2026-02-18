@@ -9,7 +9,7 @@
 ## 2) Kwaliteitschecks
 - [ ] Lint:
   - `npm run lint`
-- [ ] Typecheck (indien script aanwezig):
+- [ ] Typecheck:
   - `npm run typecheck`
 - [ ] Productiebuild:
   - `npm run build`

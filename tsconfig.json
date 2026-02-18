@@ -30,7 +30,11 @@
       "lucide-react": [
         "./lib/lucide-react"
       ]
-    }
+    },
+    "types": [
+      "vitest/globals",
+      "@testing-library/jest-dom"
+    ]
   },
   "include": [
     "next-env.d.ts",

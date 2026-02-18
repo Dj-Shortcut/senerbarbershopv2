@@ -12,17 +12,20 @@ describe("getLocalBusinessSchema", () => {
     const [barberShop, website] = schema["@graph"];
 
     expect(barberShop["@type"]).toBe("BarberShop");
-    expect(barberShop.hasOfferCatalog.itemListElement.length).toBeGreaterThan(0);
+    expect(barberShop.hasOfferCatalog).toBeDefined();
+    expect(barberShop.hasOfferCatalog?.itemListElement.length).toBeGreaterThan(0);
     expect(barberShop.openingHoursSpecification).toHaveLength(5);
 
     expect(website["@type"]).toBe("WebSite");
-    expect(website.publisher["@id"]).toBe(barberShop["@id"]);
+    expect(website.publisher).toBeDefined();
+    expect(website.publisher?.["@id"]).toBe(barberShop["@id"]);
   });
 
   it("exposes service offers with euro pricing", () => {
     const schema = getLocalBusinessSchema();
     const barberShop = schema["@graph"][0];
-    const offers = barberShop.hasOfferCatalog.itemListElement;
+    expect(barberShop.hasOfferCatalog).toBeDefined();
+    const offers = barberShop.hasOfferCatalog?.itemListElement ?? [];
 
     expect(offers.some((offer: { name: string }) => offer.name === "Knippen")).toBe(true);
     expect(offers.every((offer: { priceCurrency: string }) => offer.priceCurrency === "EUR")).toBe(true);
