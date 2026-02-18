@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Gallery from "../components/Gallery";
 import PricesList from "../components/PricesList";
 import Reveal from "../components/Reveal";
@@ -19,13 +19,17 @@ const facts = [
 const dayLabels = ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"];
 
 export default function HomePage() {
-  const status = useMemo(() => getShopStatus(new Date()), []);
+  const [now, setNow] = useState<Date | null>(null);
+  const referenceDate = now ?? new Date("2026-01-01T12:00:00");
+  const status = getShopStatus(referenceDate);
   const selectedService = SERVICES[0];
-  const today = new Date().getDay();
+  const today = referenceDate.getDay();
   const heroRef = useRef<HTMLElement | null>(null);
   const [showStickyCta, setShowStickyCta] = useState(false);
 
   useEffect(() => {
+    setNow(new Date());
+
     const heroNode = heroRef.current;
     if (!heroNode || typeof window === "undefined") {
       return;
@@ -148,10 +152,9 @@ export default function HomePage() {
           <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 px-4 backdrop-blur">
             <div className="divide-y divide-white/10">
               {dayLabels.map((label, dayIndex) => {
-                const currentDate = new Date();
-                const offset = dayIndex - currentDate.getDay();
-                const date = new Date(currentDate);
-                date.setDate(currentDate.getDate() + offset);
+                const offset = dayIndex - referenceDate.getDay();
+                const date = new Date(referenceDate);
+                date.setDate(referenceDate.getDate() + offset);
                 const daySchedule = getScheduleForDate(date);
                 const isToday = dayIndex === today;
 

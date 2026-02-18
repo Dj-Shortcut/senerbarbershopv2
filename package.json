@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
-    "preview:checks": "npm run lint && npm run test"
+    "preview:checks": "npm run lint && npm run test",
+    "check:a11y": "next lint --dir app --dir components --max-warnings=0"
   },
   "dependencies": {
     "next": "14.2.5",
