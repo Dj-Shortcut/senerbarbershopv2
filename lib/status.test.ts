@@ -1,7 +1,11 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { getStatus } from "./status";
 
 describe("getStatus", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it("returns next opening today before opening time", () => {
     const status = getStatus(new Date(2026, 0, 6, 9, 59)); // Tuesday
     expect(status.isOpen).toBe(false);
@@ -28,7 +32,10 @@ describe("getStatus", () => {
   });
 
   it("returns next opening around configured holiday", () => {
-    const status = getStatus(new Date(2026, 11, 25, 12, 0)); // Friday holiday
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-12-25T12:00:00+01:00")); // Friday holiday in Europe/Brussels
+
+    const status = getStatus();
     expect(status.isOpen).toBe(false);
     expect(status.label).toBe("Gesloten • opent morgen om 09:00");
   });

@@ -1,3 +1,5 @@
+process.env.TZ = "Europe/Brussels";
+
 import "@testing-library/jest-dom/vitest";
 
 class MockIntersectionObserver {
