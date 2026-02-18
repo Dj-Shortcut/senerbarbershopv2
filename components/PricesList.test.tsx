@@ -26,4 +26,12 @@ describe("PricesList", () => {
     expect(ui.getByText(/Meest gekozen vandaag:/i)).toBeInTheDocument();
     expect(ui.getAllByText(/knippen/i).length).toBeGreaterThan(0);
   });
+
+  it("renders fallback message when no services are available", () => {
+    render(<PricesList services={[]} />);
+
+    const ui = getPricesSection();
+
+    expect(ui.getByText(/prijslijst wordt momenteel bijgewerkt/i)).toBeInTheDocument();
+  });
 });

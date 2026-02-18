@@ -12,21 +12,23 @@ const featuredVideos = [
     src: "/assets/video/featured-clip.mp4",
     poster: "/assets/images/signature-fade.jpg",
     objectPosition: "50% 15%",
-    ariaLabel: "Featured haircut clip",
+    ariaLabel: "Video van een signature fade met detailafwerking",
   },
   {
     id: "hero-alt-bg",
     src: "/assets/video/hero-alt-bg.mp4",
     poster: "/assets/images/classic-cut.jpg",
     objectPosition: "50% 20%",
-    ariaLabel: "Alternative featured haircut clip",
+    ariaLabel: "Video van een klassieke herensnit met nette contouren",
   },
 ] as const;
 
 export interface GalleryItem {
   id: string;
   title: string;
+  altText: string;
   imageSrc: string;
+  caption?: string;
   aspect?: "portrait" | "square";
 }
 
@@ -36,12 +38,54 @@ export interface GalleryProps {
 }
 
 const defaultItems: GalleryItem[] = [
-  { id: "signature-fade", title: "Signature Fade", imageSrc: "/assets/images/signature-fade.jpg", aspect: "portrait" },
-  { id: "skin-fade", title: "Skin Fade", imageSrc: "/assets/images/skin-fade.jpg", aspect: "portrait" },
-  { id: "classic-cut", title: "Classic Cut", imageSrc: "/assets/images/classic-cut.jpg", aspect: "portrait" },
-  { id: "beard-detail", title: "Beard Detail", imageSrc: "/assets/images/beard-detail.jpg", aspect: "portrait" },
-  { id: "precision-line-up", title: "Precision Line-up", imageSrc: "/assets/images/precision-line-up.jpg", aspect: "portrait" },
-  { id: "texture-crop", title: "Texture Crop", imageSrc: "/assets/images/texture-crop.jpg", aspect: "portrait" },
+  {
+    id: "signature-fade",
+    title: "Signature Fade",
+    altText: "Signature fade met vloeiende overloop en strakke bovenlijn",
+    caption: "Vloeiende fade met natuurlijke textuur",
+    imageSrc: "/assets/images/signature-fade.jpg",
+    aspect: "portrait",
+  },
+  {
+    id: "skin-fade",
+    title: "Skin Fade",
+    altText: "Skin fade met korte zijkanten en nette contouren",
+    caption: "Skin fade met precieze afwerking",
+    imageSrc: "/assets/images/skin-fade.jpg",
+    aspect: "portrait",
+  },
+  {
+    id: "classic-cut",
+    title: "Classic Cut",
+    altText: "Klassieke herensnit met volume bovenaan",
+    caption: "Tijdloze snit met verzorgde styling",
+    imageSrc: "/assets/images/classic-cut.jpg",
+    aspect: "portrait",
+  },
+  {
+    id: "beard-detail",
+    title: "Beard Detail",
+    altText: "Baarddetail met strakke lijnen rond wangen en hals",
+    caption: "Nette baardlijnen voor een verzorgde look",
+    imageSrc: "/assets/images/beard-detail.jpg",
+    aspect: "portrait",
+  },
+  {
+    id: "precision-line-up",
+    title: "Precision Line-up",
+    altText: "Line-up met scherpe contouren aan voorhoofd en slapen",
+    caption: "Precisiewerk met scherpe outline",
+    imageSrc: "/assets/images/precision-line-up.jpg",
+    aspect: "portrait",
+  },
+  {
+    id: "texture-crop",
+    title: "Texture Crop",
+    altText: "Texture crop met korte fade en gedefinieerde textuur",
+    caption: "Korte crop met gecontroleerde textuur",
+    imageSrc: "/assets/images/texture-crop.jpg",
+    aspect: "portrait",
+  },
 ];
 
 function usePrefersReducedMotion() {
@@ -302,35 +346,46 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
           </article>
         </Reveal>
 
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-5">
-          {items.map((item, index) => {
-            const aspectClass = item.aspect === "square" ? "aspect-square" : "aspect-[4/5]";
+        {items.length === 0 ? (
+          <div className="rounded-2xl border border-white/10 bg-zinc-900/70 px-5 py-6 text-sm text-zinc-300">
+            Nieuwe looks worden binnenkort toegevoegd. Bekijk intussen onze video of contacteer ons voor recente resultaten.
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-5">
+            {items.map((item, index) => {
+              const aspectClass = item.aspect === "square" ? "aspect-square" : "aspect-[4/5]";
 
-            return (
-              <Reveal key={item.id} delayMs={index * 40}>
-                <article className="group relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/70 shadow-md shadow-black/30">
-                  <div className={`${aspectClass} relative w-full overflow-hidden`}>
-                    <Image
-                      src={item.imageSrc}
-                      alt={item.title}
-                      fill
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 30vw"
-                      className="object-cover transition duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-110 motion-reduce:transform-none"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/10 to-black/0 transition group-hover:from-black/20" />
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/65 to-black/0 px-[clamp(0.5rem,1.8vw,1rem)] pb-[clamp(0.5rem,1.9vw,1rem)] pt-[clamp(1.1rem,4vw,2rem)] backdrop-blur-[1px]">
-                      <p className="[display:-webkit-box] overflow-hidden text-[clamp(12px,2.6vw,16px)] font-semibold leading-tight text-zinc-100 [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [word-break:normal] [overflow-wrap:anywhere] [hyphens:auto]">
-                        {item.title}
-                      </p>
+              return (
+                <Reveal key={item.id} delayMs={index * 40}>
+                  <article className="group relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/70 shadow-md shadow-black/30">
+                    <div className={`${aspectClass} relative w-full overflow-hidden`}>
+                      <Image
+                        src={item.imageSrc}
+                        alt={item.altText}
+                        fill
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 30vw"
+                        className="object-cover transition duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-110 motion-reduce:transform-none"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/25 via-black/10 to-black/0 transition group-hover:from-black/20" />
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/65 to-black/0 px-[clamp(0.5rem,1.8vw,1rem)] pb-[clamp(0.5rem,1.9vw,1rem)] pt-[clamp(1.1rem,4vw,2rem)] backdrop-blur-[1px]">
+                        <p className="[display:-webkit-box] overflow-hidden text-[clamp(12px,2.6vw,16px)] font-semibold leading-tight text-zinc-100 [-webkit-box-orient:vertical] [-webkit-line-clamp:2] [word-break:normal] [overflow-wrap:anywhere] [hyphens:auto]">
+                          {item.title}
+                        </p>
+                        {item.caption ? (
+                          <p className="mt-1 text-[11px] leading-snug text-zinc-300/85">
+                            {item.caption}
+                          </p>
+                        ) : null}
+                      </div>
                     </div>
-                  </div>
-                </article>
-              </Reveal>
-            );
-          })}
-        </div>
+                  </article>
+                </Reveal>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );

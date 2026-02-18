@@ -14,6 +14,32 @@ body {
   @apply min-h-screen bg-zinc-950 text-zinc-100 antialiased;
 }
 
+.skip-link {
+  position: fixed;
+  left: 12px;
+  top: 12px;
+  z-index: 60;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(9, 9, 11, 0.92);
+  color: rgb(244 244 245);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  transform: translateY(-140%);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 180ms ease-out, opacity 180ms ease-out;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.28);
+}
+
 .reveal {
   opacity: 0;
   transform: translateY(16px);
@@ -265,5 +291,9 @@ body {
 
   .price-row[data-pressed="true"] {
     transform: none;
+  }
+
+  .skip-link {
+    transition: none;
   }
 }

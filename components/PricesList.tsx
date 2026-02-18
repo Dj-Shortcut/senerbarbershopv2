@@ -108,6 +108,10 @@ function PriceSectionCard({
 }) {
   const { ref, isVisible } = useRevealOnScroll<HTMLElement>();
 
+  const sectionServices = section.itemIds
+    .map((serviceId) => servicesById.get(serviceId))
+    .filter((service): service is Service => Boolean(service));
+
   return (
     <article
       ref={ref}
@@ -118,59 +122,59 @@ function PriceSectionCard({
       <h3 className="border-b border-white/10 px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-400">{section.heading}</h3>
 
       <div className="divide-y divide-white/10">
-        {section.itemIds.map((serviceId, index) => {
-          const service = servicesById.get(serviceId);
-          if (!service) {
-            return null;
-          }
+        {sectionServices.length === 0 ? (
+          <p className="px-5 py-4 text-sm text-zinc-400">Deze categorie heeft momenteel geen beschikbare opties.</p>
+        ) : (
+          sectionServices.map((service, index) => {
+            const isSelected = service.id === selectedId;
+            const isPressed = service.id === pressedId;
+            const description = section.descriptions[service.id as keyof typeof section.descriptions];
+            const detail = serviceDetails[service.id];
 
-          const isSelected = service.id === selectedId;
-          const isPressed = service.id === pressedId;
-          const description = section.descriptions[service.id as keyof typeof section.descriptions];
-          const detail = serviceDetails[service.id];
-
-          return (
-            <button
-              key={service.id}
-              type="button"
-              onClick={() => onToggleSelect(service)}
-              onPointerDown={() => onPressStart(service.id)}
-              onPointerUp={() => onPressEnd(service.id)}
-              onPointerCancel={() => onPressEnd(service.id)}
-              onPointerLeave={() => onPressEnd(service.id)}
-              data-selected={isSelected ? "true" : "false"}
-              data-pressed={isPressed ? "true" : "false"}
-              aria-pressed={isSelected}
-              aria-label={`${service.name} ${service.price}`}
-              className="price-row grid w-full gap-3 px-5 py-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/70 sm:grid-cols-[1fr_auto] sm:items-center"
-              style={{ "--stagger": `${index * 60}ms` } as CSSProperties}
-            >
-              <div className="price-row__content">
-                <p className="price-row__title text-base font-medium text-zinc-50">{service.name}</p>
-                <p className="mt-1 text-sm text-zinc-400">{description}</p>
-                <div className="price-row__details" data-open={isSelected ? "true" : "false"}>
-                  <p className="pt-2 text-xs font-medium tracking-wide text-zinc-300">{detail}</p>
+            return (
+              <button
+                key={service.id}
+                type="button"
+                onClick={() => onToggleSelect(service)}
+                onPointerDown={() => onPressStart(service.id)}
+                onPointerUp={() => onPressEnd(service.id)}
+                onPointerCancel={() => onPressEnd(service.id)}
+                onPointerLeave={() => onPressEnd(service.id)}
+                data-selected={isSelected ? "true" : "false"}
+                data-pressed={isPressed ? "true" : "false"}
+                aria-pressed={isSelected}
+                aria-label={`${service.name} ${service.price}`}
+                className="price-row grid w-full gap-3 px-5 py-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/70 sm:grid-cols-[1fr_auto] sm:items-center"
+                style={{ "--stagger": `${index * 60}ms` } as CSSProperties}
+              >
+                <div className="price-row__content">
+                  <p className="price-row__title text-base font-medium text-zinc-50">{service.name}</p>
+                  <p className="mt-1 text-sm text-zinc-400">{description}</p>
+                  <div className="price-row__details" data-open={isSelected ? "true" : "false"}>
+                    <p className="pt-2 text-xs font-medium tracking-wide text-zinc-300">{detail}</p>
+                  </div>
                 </div>
-              </div>
 
-              <span className="price-badge inline-flex h-8 w-fit items-center rounded-full border border-white/15 bg-white/10 px-3 text-sm font-semibold tracking-wide text-zinc-100 sm:justify-self-end">
-                {service.price}
-              </span>
-            </button>
-          );
-        })}
+                <span className="price-badge inline-flex h-8 w-fit items-center rounded-full border border-white/15 bg-white/10 px-3 text-sm font-semibold tracking-wide text-zinc-100 sm:justify-self-end">
+                  {service.price}
+                </span>
+              </button>
+            );
+          })
+        )}
       </div>
     </article>
   );
 }
 
-export default function PricesList() {
-  const [selectedId, setSelectedId] = useState<string | null>(SERVICES[0]?.id ?? null);
+export default function PricesList({ services = SERVICES }: { services?: Service[] }) {
+  const [selectedId, setSelectedId] = useState<string | null>(services[0]?.id ?? null);
   const [pressedId, setPressedId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const servicesById = useMemo(() => new Map(SERVICES.map((service) => [service.id, service])), []);
+  const servicesById = useMemo(() => new Map(services.map((service) => [service.id, service])), [services]);
 
   const selectedService = selectedId ? servicesById.get(selectedId) ?? null : null;
+  const hasAnyServices = services.length > 0;
 
   useEffect(() => {
     if (!toastMessage) {
@@ -209,20 +213,26 @@ export default function PricesList() {
           Meest gekozen vandaag: {selectedService?.name ?? "Kies een behandeling"}
         </p>
 
-        <div className="mt-6 space-y-5">
-          {sectionDefinitions.map((section) => (
-            <PriceSectionCard
-              key={section.key}
-              section={section}
-              selectedId={selectedId}
-              pressedId={pressedId}
-              onToggleSelect={handleToggleSelect}
-              onPressStart={handlePressStart}
-              onPressEnd={handlePressEnd}
-              servicesById={servicesById}
-            />
-          ))}
-        </div>
+        {hasAnyServices ? (
+          <div className="mt-6 space-y-5">
+            {sectionDefinitions.map((section) => (
+              <PriceSectionCard
+                key={section.key}
+                section={section}
+                selectedId={selectedId}
+                pressedId={pressedId}
+                onToggleSelect={handleToggleSelect}
+                onPressStart={handlePressStart}
+                onPressEnd={handlePressEnd}
+                servicesById={servicesById}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] px-5 py-6 text-sm text-zinc-300">
+            Onze prijslijst wordt momenteel bijgewerkt. Bel of stuur een WhatsApp-bericht voor de meest recente tarieven.
+          </div>
+        )}
 
         <div className="price-toast-wrap" aria-live="polite" aria-atomic="true">
           <div className="price-toast" data-visible={toastMessage ? "true" : "false"}>
