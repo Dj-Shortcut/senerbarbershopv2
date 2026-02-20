@@ -1,4 +1,5 @@
 import { getScheduleForDate } from "./schedule";
+import { vacationEnabled, vacationReturnDate } from "./config";
 
 export type BusyLevel = "Rustig" | "Normaal" | "Druk";
 
@@ -78,6 +79,16 @@ function getNextOpeningLabel(now: Date, dayOffset: number) {
 }
 
 export function getStatus(now = new Date()) {
+  if (vacationEnabled) {
+    return {
+      isOpen: false,
+      isVacation: true,
+      busyLevel: "Rustig" as BusyLevel,
+      label: `Gesloten wegens vakantie • terug op ${vacationReturnDate}`,
+      badgeLabel: `🟡 Gesloten wegens vakantie – terug op ${vacationReturnDate}`,
+    };
+  }
+
   const schedule = getScheduleForDate(now);
   const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
@@ -95,22 +106,32 @@ export function getStatus(now = new Date()) {
 
       return {
         isOpen: true,
+        isVacation: false,
         busyLevel,
         label: `Open • sluit om ${closeTimeText} (over ${closesInText})`,
+        badgeLabel: `🟢 Open tot ${closeTimeText} vandaag`,
       };
     }
   }
 
   const nextOpening = getNextOpening(now);
   if (!nextOpening) {
-    return { isOpen: false, busyLevel: "Rustig" as BusyLevel, label: "Gesloten" };
+    return {
+      isOpen: false,
+      isVacation: false,
+      busyLevel: "Rustig" as BusyLevel,
+      label: "Gesloten",
+      badgeLabel: "🔴 Gesloten",
+    };
   }
 
   const dayLabel = getNextOpeningLabel(now, nextOpening.dayOffset);
   return {
     isOpen: false,
+    isVacation: false,
     busyLevel: "Rustig" as BusyLevel,
     label: `Gesloten • opent ${dayLabel} om ${formatBelgianTime(nextOpening.open)}`,
+    badgeLabel: `🔴 Gesloten – open ${dayLabel} om ${formatBelgianTime(nextOpening.open)}`,
   };
 }
 

@@ -9,6 +9,7 @@ import { getScheduleForDate } from "../lib/schedule";
 import { SERVICES, getServiceLabel } from "../lib/services";
 import { getShopStatus } from "../lib/status";
 import { createDrukteWhatsAppUrl } from "../lib/whatsapp";
+import { vacationEnabled, vacationReturnDate } from "../lib/config";
 
 const facts = [
   { label: "Zorgvuldige afwerking", value: "Elke knipbeurt" },
@@ -17,6 +18,10 @@ const facts = [
 ];
 
 const dayLabels = ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"];
+
+function formatHourRange(hour: string) {
+  return `${hour.replace(":00", "u")}`;
+}
 
 export default function HomePage() {
   const [now, setNow] = useState<Date | null>(null);
@@ -83,10 +88,17 @@ export default function HomePage() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-300">The Sener Barber</p>
         </Reveal>
         <Reveal delayMs={40}>
-          <span className={`mt-4 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${status.isOpen ? "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30" : "bg-zinc-800 text-zinc-300 ring-1 ring-zinc-700"}`}>
+          <span className={`mt-4 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${status.isVacation ? "bg-amber-500/20 text-amber-200 ring-1 ring-amber-400/30" : status.isOpen ? "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30" : "bg-zinc-800 text-zinc-300 ring-1 ring-zinc-700"}`}>
             {status.label}
           </span>
         </Reveal>
+        {vacationEnabled ? (
+          <Reveal delayMs={55}>
+            <div className="vacation-banner mt-4" data-visible="true" role="status" aria-live="polite">
+              We zijn gesloten wegens vakantie en zijn terug open op {vacationReturnDate}
+            </div>
+          </Reveal>
+        ) : null}
         <Reveal delayMs={60}>
           <h1 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-zinc-50 sm:text-5xl">
             The Sener Barber
@@ -145,8 +157,8 @@ export default function HomePage() {
         <div className="mx-auto max-w-4xl px-4">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-xl font-semibold text-zinc-100">Openingstijden</h2>
-            <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${status.isOpen ? "border-emerald-500/20 bg-emerald-500/15 text-emerald-200" : "border-white/15 bg-white/5 text-white/75"}`}>
-              {status.isOpen ? "Open" : "Gesloten"}
+            <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${status.isVacation ? "border-amber-500/30 bg-amber-500/15 text-amber-100" : status.isOpen ? "border-emerald-500/20 bg-emerald-500/15 text-emerald-200" : "border-white/15 bg-white/5 text-white/75"}`}>
+              {status.badgeLabel}
             </span>
           </div>
           <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 px-4 backdrop-blur">
@@ -163,9 +175,16 @@ export default function HomePage() {
                     key={label}
                     className={`grid grid-cols-[1fr_auto] items-center gap-4 py-3 text-sm ${isToday ? "-mx-2 rounded-lg bg-emerald-500/10 px-2" : ""}`}
                   >
-                    <span className={`font-semibold ${isToday ? "text-emerald-200" : "text-white/90"}`}>{label}{isToday ? " (vandaag)" : ""}</span>
-                    <span className="tabular-nums text-right text-white/85">
-                      {daySchedule.closed ? <span className="font-medium text-zinc-300">Gesloten</span> : `${daySchedule.open} - ${daySchedule.close}`}
+                    <span className={`font-semibold ${isToday ? "text-emerald-200" : dayIndex === 1 ? "text-zinc-500" : "text-white/90"}`}>
+                      {label}
+                      {isToday ? " (vandaag)" : ""}
+                    </span>
+                    <span className={`tabular-nums text-right ${dayIndex === 1 ? "text-zinc-500" : "text-white/85"}`}>
+                      {daySchedule.closed ? (
+                        <span className={`font-medium ${dayIndex === 1 ? "text-zinc-500" : "text-zinc-300"}`}>{dayIndex === 1 ? "Gesloten (rustdag)" : "Gesloten"}</span>
+                      ) : (
+                        `${formatHourRange(daySchedule.open)}–${formatHourRange(daySchedule.close)}`
+                      )}
                     </span>
                   </div>
                 );

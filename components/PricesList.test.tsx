@@ -18,13 +18,23 @@ describe("PricesList", () => {
     expect(ui.getByRole("button", { name: /knippen & baard/i })).toBeInTheDocument();
   });
 
-  it("shows default selected service summary", () => {
+  it("starts with no selected service summary", () => {
     render(<PricesList />);
 
     const ui = getPricesSection();
 
     expect(ui.getByText(/Meest gekozen vandaag:/i)).toBeInTheDocument();
-    expect(ui.getAllByText(/knippen/i).length).toBeGreaterThan(0);
+    expect(ui.getByText(/Kies een behandeling/i)).toBeInTheDocument();
+  });
+
+
+  it("keeps all price items inactive on initial render", () => {
+    render(<PricesList />);
+
+    const ui = getPricesSection();
+    const pressedItems = ui.queryAllByRole("button", { pressed: true });
+
+    expect(pressedItems).toHaveLength(0);
   });
 
   it("renders fallback message when no services are available", () => {
