@@ -168,7 +168,7 @@ function PriceSectionCard({
 }
 
 export default function PricesList({ services = SERVICES }: { services?: Service[] }) {
-  const [selectedId, setSelectedId] = useState<string | null>(services[0]?.id ?? null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [pressedId, setPressedId] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const servicesById = useMemo(() => new Map(services.map((service) => [service.id, service])), [services]);

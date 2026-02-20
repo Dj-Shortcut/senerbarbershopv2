@@ -21,6 +21,7 @@ describe("getStatus", () => {
     expect(status.isOpen).toBe(true);
     expect(status.busyLevel).toBe("Rustig");
     expect(status.label).toBe("Open • sluit om 19:00 (over 10u)");
+    expect(status.badgeLabel).toBe("🟢 Open tot 19:00 vandaag");
   });
 
   it("returns next opening tomorrow at exact closing time", () => {
@@ -30,7 +31,7 @@ describe("getStatus", () => {
   });
 
   it("returns next opening day label after saturday close", () => {
-    const status = getStatus(new Date(2026, 0, 10, 18, 15)); // Saturday after close
+    const status = getStatus(new Date(2026, 0, 10, 19, 15)); // Saturday after close
     expect(status.isOpen).toBe(false);
     expect(status.label).toBe("Gesloten • opent dinsdag om 09:00");
   });
@@ -42,16 +43,17 @@ describe("getStatus", () => {
   });
 
   it("stays open one minute before thursday closing time", () => {
-    const status = getStatus(atBrussels("2026-01-08T19:59:00+01:00")); // Thursday
+    const status = getStatus(atBrussels("2026-01-08T18:59:00+01:00")); // Thursday
     expect(status.isOpen).toBe(true);
     expect(status.busyLevel).toBe("Druk");
-    expect(status.label).toBe("Open • sluit om 20:00 (over 1m)");
+    expect(status.label).toBe("Open • sluit om 19:00 (over 1m)");
   });
 
   it("switches to closed exactly at thursday closing time", () => {
-    const status = getStatus(atBrussels("2026-01-08T20:00:00+01:00")); // Thursday
+    const status = getStatus(atBrussels("2026-01-08T19:00:00+01:00")); // Thursday
     expect(status.isOpen).toBe(false);
     expect(status.label).toBe("Gesloten • opent morgen om 09:00");
+    expect(status.badgeLabel).toBe("🔴 Gesloten – open morgen om 09:00");
   });
 
   it("labels next opening day correctly over multiple consecutive closed days", () => {
