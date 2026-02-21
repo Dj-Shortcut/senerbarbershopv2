@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { BUSINESS_NAME, SEO_DESCRIPTION, SITE_URL } from "../lib/seo";
 import { getLocalBusinessSchema } from "../lib/schema/localBusiness";
+import { Analytics } from "@vercel/analytics/next";
 
 const ogImage = "/og-image";
 
@@ -65,6 +66,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(getLocalBusinessSchema()) }}
         />
         {children}
+        <Analytics />
       </body>
     </html>
   );
