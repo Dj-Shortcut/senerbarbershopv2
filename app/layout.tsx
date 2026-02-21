@@ -3,6 +3,7 @@ import "./globals.css";
 import { BUSINESS_NAME, SEO_DESCRIPTION, SITE_URL } from "../lib/seo";
 import { getLocalBusinessSchema } from "../lib/schema/localBusiness";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const ogImage = "/og-image";
 
@@ -67,6 +68,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         {children}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
