@@ -255,18 +255,23 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
   };
 
   return (
-    <section className={`w-full py-12 sm:py-16 ${className}`.trim()} aria-labelledby="gallery-heading">
+    <section className={`w-full border-y border-white/10 bg-white/[0.025] py-12 sm:py-16 ${className}`.trim()} aria-labelledby="gallery-heading">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="mb-6 sm:mb-8">
-          <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">Galerij</p>
-          <h2 id="gallery-heading" className="mt-2 text-2xl font-semibold text-zinc-100 sm:text-3xl">
-            Recente looks
-          </h2>
+        <div className="mb-7 grid gap-3 sm:mb-9 sm:grid-cols-[0.8fr_1.2fr] sm:items-end">
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Galerij</p>
+            <h2 id="gallery-heading" className="mt-2 text-3xl font-semibold text-zinc-100 sm:text-4xl">
+              Recente looks
+            </h2>
+          </div>
+          <p className="max-w-2xl text-sm leading-6 text-zinc-400 sm:justify-self-end sm:text-right">
+            Een korte selectie van fades, contouren en verzorgde afwerking uit de stoel.
+          </p>
         </div>
 
         <Reveal>
-          <article className="mb-5 overflow-hidden rounded-2xl border border-white/10 bg-black/30 shadow-lg shadow-black/30 backdrop-blur">
-            <div ref={videoMountRef} className="relative mx-auto aspect-[9/16] w-full max-w-sm overflow-hidden">
+          <article className="mb-5 overflow-hidden border border-white/10 bg-black/30 shadow-lg shadow-black/30 backdrop-blur sm:mb-6">
+            <div ref={videoMountRef} className="relative mx-auto aspect-[9/16] w-full max-w-sm overflow-hidden sm:max-w-md">
               {shouldRenderVideo ? (
                 <div
                   ref={carouselViewportRef}
@@ -397,14 +402,15 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
             Nieuwe looks worden binnenkort toegevoegd. Bekijk intussen onze video of contacteer ons voor recente resultaten.
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-5">
+          <div className="grid grid-cols-2 gap-px overflow-hidden border border-white/10 bg-white/10 sm:gap-1 sm:border-0 sm:bg-transparent lg:grid-cols-3">
             {items.map((item, index) => {
               const aspectClass = item.aspect === "square" ? "aspect-square" : "aspect-[4/5]";
+              const isFeatureTile = index === 0;
 
               return (
                 <Reveal key={item.id} delayMs={index * 40}>
-                  <article className="group relative overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/70 shadow-md shadow-black/30">
-                    <div className={`${aspectClass} relative w-full overflow-hidden`}>
+                  <article className={`group relative overflow-hidden bg-zinc-900/70 ${isFeatureTile ? "sm:col-span-2 sm:row-span-2 lg:col-span-1 lg:row-span-1" : ""}`}>
+                    <div className={`${isFeatureTile ? "aspect-[4/5] sm:aspect-[8/5] lg:aspect-[4/5]" : aspectClass} relative w-full overflow-hidden`}>
                       <Image
                         src={item.imageSrc}
                         alt={item.altText}

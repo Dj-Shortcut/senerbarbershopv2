@@ -115,11 +115,11 @@ function PriceSectionCard({
   return (
     <article
       ref={ref}
-      className={`price-section-card reveal overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] shadow-[0_12px_30px_-22px_rgba(255,255,255,0.5)] backdrop-blur ${
+      className={`price-section-card reveal overflow-hidden border-t border-white/10 ${
         isVisible ? "reveal--visible" : ""
       }`.trim()}
     >
-      <h3 className="border-b border-white/10 px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-400">{section.heading}</h3>
+      <h3 className="px-1 py-4 text-xs font-semibold uppercase tracking-[0.16em] text-zinc-400">{section.heading}</h3>
 
       <div className="divide-y divide-white/10">
         {sectionServices.length === 0 ? (
@@ -144,7 +144,7 @@ function PriceSectionCard({
                 data-pressed={isPressed ? "true" : "false"}
                 aria-pressed={isSelected}
                 aria-label={`${service.name} ${service.price}`}
-                className="price-row grid w-full gap-3 px-5 py-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/70 sm:grid-cols-[1fr_auto] sm:items-center"
+                className="price-row grid w-full gap-3 px-1 py-4 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300/70 sm:grid-cols-[1fr_auto] sm:items-center"
                 style={{ "--stagger": `${index * 60}ms` } as CSSProperties}
               >
                 <div className="price-row__content">
@@ -155,7 +155,7 @@ function PriceSectionCard({
                   </div>
                 </div>
 
-                <span className="price-badge inline-flex h-8 w-fit items-center rounded-full border border-white/15 bg-white/10 px-3 text-sm font-semibold tracking-wide text-zinc-100 sm:justify-self-end">
+                <span className="price-badge inline-flex h-8 w-fit items-center border border-white/15 bg-white/10 px-3 text-sm font-semibold tracking-wide text-zinc-100 sm:justify-self-end">
                   {service.price}
                 </span>
               </button>
@@ -206,15 +206,20 @@ export default function PricesList({ services = SERVICES }: { services?: Service
   };
 
   return (
-    <section id="prijzen" className="py-8">
-      <div className="mx-auto max-w-4xl px-4">
-        <h2 className="text-2xl font-semibold text-zinc-100 sm:text-3xl">Prijzen</h2>
-        <p className="mt-2 text-sm text-zinc-400">
-          Meest gekozen vandaag: {selectedService?.name ?? "Kies een behandeling"}
-        </p>
+    <section id="prijzen" className="py-12 sm:py-16">
+      <div className="mx-auto max-w-5xl px-4">
+        <div className="grid gap-3 sm:grid-cols-[0.8fr_1.2fr] sm:items-end">
+          <div>
+            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Menu</p>
+            <h2 className="mt-2 text-3xl font-semibold text-zinc-100 sm:text-4xl">Prijzen</h2>
+          </div>
+          <p className="max-w-2xl text-sm leading-6 text-zinc-400 sm:justify-self-end sm:text-right">
+            Meest gekozen vandaag: {selectedService?.name ?? "Kies een behandeling"}
+          </p>
+        </div>
 
         {hasAnyServices ? (
-          <div className="mt-6 space-y-5">
+          <div className="mt-8 grid gap-x-10 gap-y-3 lg:grid-cols-2">
             {sectionDefinitions.map((section) => (
               <PriceSectionCard
                 key={section.key}
