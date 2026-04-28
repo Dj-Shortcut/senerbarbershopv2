@@ -406,6 +406,9 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
             {items.map((item, index) => {
               const aspectClass = item.aspect === "square" ? "aspect-square" : "aspect-[4/5]";
               const isFeatureTile = index === 0;
+              const imageSizes = isFeatureTile
+                ? "(max-width: 640px) 50vw, (max-width: 1024px) 100vw, 33vw"
+                : "(max-width: 1024px) 50vw, 33vw";
 
               return (
                 <Reveal key={item.id} delayMs={index * 40}>
@@ -415,7 +418,7 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                         src={item.imageSrc}
                         alt={item.altText}
                         fill
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 30vw"
+                        sizes={imageSizes}
                         className="object-cover transition duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-110 motion-reduce:transform-none"
                         loading="lazy"
                         decoding="async"

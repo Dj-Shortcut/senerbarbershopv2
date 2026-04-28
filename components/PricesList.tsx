@@ -214,7 +214,7 @@ export default function PricesList({ services = SERVICES }: { services?: Service
             <h2 className="mt-2 text-3xl font-semibold text-zinc-100 sm:text-4xl">Prijzen</h2>
           </div>
           <p className="max-w-2xl text-sm leading-6 text-zinc-400 sm:justify-self-end sm:text-right">
-            Meest gekozen vandaag: {selectedService?.name ?? "Kies een behandeling"}
+            Gekozen behandeling: {selectedService?.name ?? "Kies een behandeling"}
           </p>
         </div>
 
