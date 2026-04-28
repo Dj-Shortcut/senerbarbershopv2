@@ -1,7 +1,7 @@
 import { getScheduleForDate } from "./schedule";
 import { vacationEnabled, vacationReturnDate } from "./config";
 
-export type BusyLevel = "Rustig" | "Normaal" | "Druk";
+type BusyLevel = "Rustig" | "Normaal" | "Druk";
 
 const DAY_LABELS = ["zondag", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag"] as const;
 

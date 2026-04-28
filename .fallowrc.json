@@ -1,0 +1,5 @@
+{
+  "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/config-schema.json",
+  "dynamicallyLoaded": ["app/og-image.tsx"],
+  "ignoreDependencies": ["eslint-config-next"]
+}

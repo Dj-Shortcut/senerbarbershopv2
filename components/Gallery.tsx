@@ -23,7 +23,7 @@ const featuredVideos = [
   },
 ] as const;
 
-export interface GalleryItem {
+interface GalleryItem {
   id: string;
   title: string;
   altText: string;
@@ -32,7 +32,7 @@ export interface GalleryItem {
   aspect?: "portrait" | "square";
 }
 
-export interface GalleryProps {
+interface GalleryProps {
   items?: GalleryItem[];
   className?: string;
 }

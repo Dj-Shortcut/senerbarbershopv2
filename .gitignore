@@ -4,6 +4,7 @@ out/
 dist/
 .turbo/
 coverage/
+.fallow/
 .yarn/cache/
 .env*
 npm-debug.log*
