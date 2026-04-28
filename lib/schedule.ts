@@ -1,6 +1,6 @@
 import { CLOSE_HOUR, HOLIDAYS_BY_YEAR, OPEN_DAYS, OPEN_HOUR } from "./config";
 
-export type WeekDay =
+type WeekDay =
   | "sunday"
   | "monday"
   | "tuesday"
@@ -9,7 +9,7 @@ export type WeekDay =
   | "friday"
   | "saturday";
 
-export type DailySchedule = {
+type DailySchedule = {
   open: string;
   close: string;
   closed?: boolean;
@@ -18,13 +18,6 @@ export type DailySchedule = {
 const DAY_KEYS: WeekDay[] = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
 const CLOSED_DAY: DailySchedule = { open: "00:00", close: "00:00", closed: true };
-
-function toLocalIsoDate(date: Date) {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
 
 function isHoliday(date: Date) {
   const year = date.getFullYear();
@@ -47,5 +40,3 @@ export function getScheduleForDate(date: Date): DailySchedule {
     close: CLOSE_HOUR[day as keyof typeof CLOSE_HOUR],
   };
 }
-
-export { toLocalIsoDate };
