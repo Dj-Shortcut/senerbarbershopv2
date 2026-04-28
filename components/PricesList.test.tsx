@@ -23,7 +23,7 @@ describe("PricesList", () => {
 
     const ui = getPricesSection();
 
-    expect(ui.getByText(/Meest gekozen vandaag:/i)).toBeInTheDocument();
+    expect(ui.getByText(/Gekozen behandeling:/i)).toBeInTheDocument();
     expect(ui.getByText(/Kies een behandeling/i)).toBeInTheDocument();
   });
 
