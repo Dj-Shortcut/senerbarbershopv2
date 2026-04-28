@@ -1,7 +1,63 @@
-import { render, screen, within } from "@testing-library/react";
+import { act, render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import Gallery from "./Gallery";
 
+type ObserverCallback = IntersectionObserverCallback;
+
+let observerCallback: ObserverCallback | undefined;
+
+class ControllableIntersectionObserver {
+  readonly root = null;
+  readonly rootMargin = "";
+  readonly thresholds = [];
+
+  constructor(callback: ObserverCallback) {
+    observerCallback = callback;
+  }
+
+  disconnect = vi.fn();
+  observe = vi.fn();
+  takeRecords = vi.fn(() => []);
+  unobserve = vi.fn();
+}
+
+const intersectGallery = () => {
+  const target = document.createElement("div");
+  const rect = target.getBoundingClientRect();
+
+  act(() => {
+    observerCallback?.(
+      [
+        {
+          boundingClientRect: rect,
+          intersectionRatio: 1,
+          intersectionRect: rect,
+          isIntersecting: true,
+          rootBounds: null,
+          target,
+          time: performance.now(),
+        },
+      ],
+      {} as IntersectionObserver,
+    );
+  });
+};
+
 describe("Gallery", () => {
+  beforeEach(() => {
+    observerCallback = undefined;
+    vi.spyOn(window.HTMLMediaElement.prototype, "play").mockResolvedValue(undefined);
+    vi.spyOn(window.HTMLMediaElement.prototype, "pause").mockImplementation(() => {});
+    Object.defineProperty(window, "IntersectionObserver", {
+      writable: true,
+      value: ControllableIntersectionObserver,
+    });
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("renders fallback copy when gallery items are empty", () => {
     render(<Gallery items={[]} />);
 
@@ -28,5 +84,38 @@ describe("Gallery", () => {
 
     expect(screen.getByText("Test Look")).toBeInTheDocument();
     expect(screen.getByAltText("Test alt beschrijving")).toBeInTheDocument();
+  });
+
+  it("does not render video elements before the gallery is near the viewport", () => {
+    render(<Gallery />);
+
+    expect(screen.queryByLabelText(/Video van een signature fade/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/Video van een klassieke herensnit/i)).not.toBeInTheDocument();
+  });
+
+  it("renders only the active video with preload none after intersection", () => {
+    render(<Gallery />);
+
+    intersectGallery();
+
+    const activeVideo = screen.getByLabelText(/Video van een signature fade/i);
+
+    expect(activeVideo.tagName).toBe("VIDEO");
+    expect(activeVideo).toHaveAttribute("preload", "none");
+    expect(screen.queryByLabelText(/Video van een klassieke herensnit/i)).not.toBeInTheDocument();
+  });
+
+  it("switches mounted video when the active slide changes", async () => {
+    const user = userEvent.setup();
+    render(<Gallery />);
+
+    intersectGallery();
+    await user.click(screen.getByRole("button", { name: /Volgende video/i }));
+
+    const activeVideo = screen.getByLabelText(/Video van een klassieke herensnit/i);
+
+    expect(activeVideo.tagName).toBe("VIDEO");
+    expect(activeVideo).toHaveAttribute("preload", "none");
+    expect(screen.queryByLabelText(/Video van een signature fade/i)).not.toBeInTheDocument();
   });
 });

@@ -112,10 +112,22 @@ function usePrefersReducedMotion() {
   return prefersReducedMotion;
 }
 
+function pauseAndResetVideo(video: HTMLVideoElement | null) {
+  if (!video) {
+    return;
+  }
+
+  video.pause();
+  if (video.currentTime > 0.1) {
+    video.currentTime = 0;
+  }
+}
+
 export default function Gallery({ items = defaultItems, className = "" }: GalleryProps) {
   const videoMountRef = useRef<HTMLDivElement | null>(null);
   const carouselViewportRef = useRef<HTMLDivElement | null>(null);
   const videoRefs = useRef<Array<HTMLVideoElement | null>>([]);
+  const previousActiveVideoRef = useRef<HTMLVideoElement | null>(null);
   const pointerStartX = useRef<number | null>(null);
   const isDragging = useRef(false);
   const [shouldRenderVideo, setShouldRenderVideo] = useState(false);
@@ -128,6 +140,11 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
   const goToSlide = (index: number) => {
     const maxIndex = featuredVideos.length - 1;
     const clamped = Math.max(0, Math.min(index, maxIndex));
+
+    if (clamped !== activeIndex) {
+      pauseAndResetVideo(videoRefs.current[activeIndex]);
+    }
+
     setActiveIndex(clamped);
   };
 
@@ -168,28 +185,25 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
       return;
     }
 
-    videoRefs.current.forEach((video, index) => {
-      if (!video) {
-        return;
-      }
+    const previousActiveVideo = previousActiveVideoRef.current;
+    const activeVideo = videoRefs.current[activeIndex];
 
-      const shouldPlay = index === activeIndex && !prefersReducedMotion;
+    if (previousActiveVideo && previousActiveVideo !== activeVideo) {
+      pauseAndResetVideo(previousActiveVideo);
+    }
 
-      if (!shouldPlay) {
-        video.pause();
-        if (video.currentTime > 0.1) {
-          video.currentTime = 0;
-        }
-        return;
-      }
+    previousActiveVideoRef.current = activeVideo ?? null;
 
-      const playPromise = video.play();
-      if (playPromise && typeof playPromise.catch === "function") {
-        playPromise.catch(() => {
-          // Ignore autoplay restrictions; user interaction via controls can still play.
-        });
-      }
-    });
+    if (!activeVideo || prefersReducedMotion) {
+      return;
+    }
+
+    const playPromise = activeVideo.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {
+        // Ignore autoplay restrictions; user interaction via controls can still play.
+      });
+    }
   }, [activeIndex, prefersReducedMotion, shouldRenderVideo]);
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -270,40 +284,72 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                       transition: prefersReducedMotion || isDragging.current ? "none" : "transform 260ms ease-out",
                     }}
                   >
-                    {featuredVideos.map((video, index) => (
-                      <div key={video.id} className="relative h-full w-full flex-[0_0_100%] overflow-hidden">
-                        {missingVideos[video.id] ? (
-                          <div className="flex h-full w-full items-center justify-center bg-zinc-900 px-4 text-center">
-                            <p className="text-sm text-zinc-300">Deze video is momenteel niet beschikbaar.</p>
-                          </div>
-                        ) : (
-                          <video
-                            key={video.id}
-                            ref={(node) => {
-                              videoRefs.current[index] = node;
-                            }}
-                            className={`h-full w-full object-cover transition-opacity duration-300 ${loadedVideos[video.id] ? "opacity-100" : "opacity-0"}`}
-                            style={{ objectPosition: video.objectPosition }}
-                            controls={prefersReducedMotion}
-                            loop={!prefersReducedMotion}
-                            muted
-                            playsInline
-                            preload={index === activeIndex ? "metadata" : "none"}
-                            autoPlay={index === activeIndex && !prefersReducedMotion}
-                            poster={video.poster}
-                            aria-label={video.ariaLabel}
-                            onLoadedData={() => {
-                              setLoadedVideos((previous) => ({ ...previous, [video.id]: true }));
-                            }}
-                            onError={() => {
-                              setMissingVideos((previous) => ({ ...previous, [video.id]: true }));
-                            }}
-                          >
-                            <source src={video.src} type="video/mp4" />
-                          </video>
-                        )}
-                      </div>
-                    ))}
+                    {featuredVideos.map((video, index) => {
+                      const isActiveVideo = index === activeIndex;
+
+                      return (
+                        <div key={video.id} className="relative h-full w-full flex-[0_0_100%] overflow-hidden">
+                          {missingVideos[video.id] ? (
+                            <div className="flex h-full w-full items-center justify-center bg-zinc-900 px-4 text-center">
+                              <p className="text-sm text-zinc-300">Deze video is momenteel niet beschikbaar.</p>
+                            </div>
+                          ) : isActiveVideo ? (
+                            <>
+                              <Image
+                                src={video.poster}
+                                alt=""
+                                fill
+                                sizes="(max-width: 640px) 100vw, 384px"
+                                className="object-cover"
+                                style={{ objectPosition: video.objectPosition }}
+                                priority={false}
+                                aria-hidden="true"
+                              />
+                              <video
+                                key={video.id}
+                                ref={(node) => {
+                                  const previousNode = videoRefs.current[index];
+                                  videoRefs.current[index] = node;
+
+                                  if (!node && previousActiveVideoRef.current === previousNode) {
+                                    previousActiveVideoRef.current = null;
+                                  }
+                                }}
+                                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${loadedVideos[video.id] ? "opacity-100" : "opacity-0"}`}
+                                style={{ objectPosition: video.objectPosition }}
+                                controls={prefersReducedMotion}
+                                loop={!prefersReducedMotion}
+                                muted
+                                playsInline
+                                preload="none"
+                                poster={video.poster}
+                                aria-label={video.ariaLabel}
+                                onLoadedData={() => {
+                                  setLoadedVideos((previous) => ({ ...previous, [video.id]: true }));
+                                }}
+                                onError={() => {
+                                  setMissingVideos((previous) => ({ ...previous, [video.id]: true }));
+                                }}
+                              >
+                                <source src={video.src} type="video/mp4" />
+                              </video>
+                            </>
+                          ) : (
+                            <Image
+                              src={video.poster}
+                              alt=""
+                              fill
+                              sizes="(max-width: 640px) 100vw, 384px"
+                              className="object-cover"
+                              style={{ objectPosition: video.objectPosition }}
+                              loading="lazy"
+                              decoding="async"
+                              aria-hidden="true"
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
 
                   <button
