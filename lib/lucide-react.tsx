@@ -57,6 +57,24 @@ export function Phone(props: LucideProps) {
   );
 }
 
+export function ArrowRight(props: LucideProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </IconBase>
+  );
+}
+
+export function Camera(props: LucideProps) {
+  return (
+    <IconBase {...props}>
+      <path d="M3 7h4l2-2h6l2 2h4v12H3z" />
+      <circle cx="12" cy="13" r="4" />
+    </IconBase>
+  );
+}
+
 export function Github(props: LucideProps) {
   return (
     <IconBase {...props}>

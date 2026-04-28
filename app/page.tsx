@@ -1,6 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+import { ArrowRight, Camera, Phone } from "lucide-react";
 import Gallery from "../components/Gallery";
 import PricesList from "../components/PricesList";
 import Reveal from "../components/Reveal";
@@ -12,15 +14,15 @@ import { createDrukteWhatsAppUrl } from "../lib/whatsapp";
 import { vacationEnabled, vacationReturnDate } from "../lib/config";
 
 const facts = [
-  { label: "Zorgvuldige afwerking", value: "Elke knipbeurt" },
-  { label: "Persoonlijke aanpak", value: "Op jouw stijl" },
-  { label: "Walk-ins welkom", value: "Vandaag binnen" },
+  { label: "Afwerking", value: "Strakke contouren" },
+  { label: "Aanpak", value: "Op jouw stijl" },
+  { label: "Binnenlopen", value: "Walk-ins welkom" },
 ];
 
 const dayLabels = ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"];
 
 function formatHourRange(hour: string) {
-  return `${hour.replace(":00", "u")}`;
+  return hour.replace(":00", "u");
 }
 
 export default function HomePage() {
@@ -83,113 +85,122 @@ export default function HomePage() {
 
   return (
     <main id="main-content" className={`pb-20 ${showStickyCta ? "pb-[calc(7.25rem+env(safe-area-inset-bottom))] sm:pb-20" : ""}`}>
-      <section ref={heroRef} className="mx-auto max-w-6xl px-4 pb-10 pt-14 sm:px-6 lg:px-8">
-        <Reveal>
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-300">The Sener Barber</p>
-        </Reveal>
-        <Reveal delayMs={40}>
-          <span className={`mt-4 inline-flex rounded-full px-3 py-1 text-xs font-semibold ${status.isVacation ? "bg-amber-500/20 text-amber-200 ring-1 ring-amber-400/30" : status.isOpen ? "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30" : "bg-zinc-800 text-zinc-300 ring-1 ring-zinc-700"}`}>
-            {status.label}
-          </span>
-        </Reveal>
-        {vacationEnabled ? (
-          <Reveal delayMs={55}>
-            <div className="vacation-banner mt-4" data-visible="true" role="status" aria-live="polite">
-              We zijn gesloten wegens vakantie en zijn terug open op {vacationReturnDate}
+      <section ref={heroRef} className="hero-stage relative isolate flex min-h-[92svh] w-full items-end overflow-hidden px-4 pb-10 pt-16 sm:min-h-[86svh] sm:px-6 sm:pb-14 lg:px-8">
+        <Image
+          src="/assets/images/signature-fade.jpg"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="hero-stage__image object-cover"
+          aria-hidden="true"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(9,9,11,0.92)_0%,rgba(9,9,11,0.76)_42%,rgba(9,9,11,0.3)_72%,rgba(9,9,11,0.2)_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-zinc-950 to-transparent" />
+
+        <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl">
+            <Reveal>
+              <p className="text-sm font-semibold uppercase text-zinc-300">The Sener Barber</p>
+            </Reveal>
+            <Reveal delayMs={40}>
+              <span className={`mt-4 inline-flex rounded-full px-3 py-1 text-xs font-semibold backdrop-blur ${status.isVacation ? "bg-amber-500/20 text-amber-200 ring-1 ring-amber-400/30" : status.isOpen ? "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30" : "bg-black/45 text-zinc-200 ring-1 ring-white/15"}`}>
+                {status.label}
+              </span>
+            </Reveal>
+            {vacationEnabled ? (
+              <Reveal delayMs={55}>
+                <div className="vacation-banner mt-4" data-visible="true" role="status" aria-live="polite">
+                  We zijn gesloten wegens vakantie en zijn terug open op {vacationReturnDate}
+                </div>
+              </Reveal>
+            ) : null}
+            <Reveal delayMs={70}>
+              <h1 className="mt-5 text-5xl font-bold leading-[0.98] text-zinc-50 sm:text-6xl lg:text-7xl">
+                The Sener Barber
+              </h1>
+            </Reveal>
+            <Reveal delayMs={120}>
+              <p className="mt-5 max-w-xl text-base leading-7 text-zinc-200 sm:text-lg">
+                Barbier in Ninove voor strakke fades, baardverzorging en een verzorgde look. Kom langs wanneer het past.
+              </p>
+            </Reveal>
+            <Reveal delayMs={160} className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <a
+                href={createDrukteWhatsAppUrl(getServiceLabel(selectedService))}
+                target="_blank"
+                rel="noreferrer"
+                aria-label="Check drukte via WhatsApp"
+                className="ios-glass-pill ios-glass-pill--primary w-full sm:w-auto"
+              >
+                <Phone className="h-4 w-4" aria-hidden="true" />
+                <span>Check drukte op WhatsApp</span>
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </a>
+              <a href="#prijzen" className="ios-glass-pill w-full sm:w-auto">
+                <span>Bekijk prijzen</span>
+              </a>
+            </Reveal>
+          </div>
+
+          <Reveal delayMs={220} className="hero-proof w-full lg:max-w-sm">
+            <div className="grid gap-3 border-t border-white/20 pt-4 sm:grid-cols-3 lg:grid-cols-1">
+              {facts.map((fact) => (
+                <div key={fact.label} className="grid gap-1">
+                  <p className="text-xs uppercase text-zinc-400">{fact.label}</p>
+                  <p className="text-base font-semibold text-zinc-100">{fact.value}</p>
+                </div>
+              ))}
+              <a
+                href="#gallery-heading"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-zinc-100 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 sm:col-span-3 lg:col-span-1"
+              >
+                <Camera className="h-4 w-4" aria-hidden="true" />
+                <span>Bekijk recente looks</span>
+              </a>
             </div>
           </Reveal>
-        ) : null}
-        <Reveal delayMs={60}>
-          <h1 className="mt-4 max-w-3xl text-4xl font-bold tracking-tight text-zinc-50 sm:text-5xl">
-            The Sener Barber
-          </h1>
-        </Reveal>
-        <Reveal delayMs={120}>
-          <p className="mt-5 max-w-2xl text-lg text-zinc-300">
-            Barbier in Ninove voor premium herensnitten, baardverzorging en een verzorgde look. Geen afspraak nodig, walk-ins zijn welkom.
-          </p>
-        </Reveal>
-        <Reveal delayMs={160} className="mt-6">
-          <a
-            href={createDrukteWhatsAppUrl(getServiceLabel(selectedService))}
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Check drukte via WhatsApp"
-            className="ios-glass-pill ios-glass-pill--primary w-full sm:w-auto"
-          >
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.88 19.88 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.88 19.88 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h3a2 2 0 0 1 2 1.72c.12.9.33 1.77.62 2.6a2 2 0 0 1-.45 2.11L8 9.91a16 16 0 0 0 6.09 6.09l1.48-1.23a2 2 0 0 1 2.11-.45c.83.29 1.7.5 2.6.62A2 2 0 0 1 22 16.92z"/></svg>
-            <span>Check drukte op WhatsApp</span>
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </a>
-        </Reveal>
-        <Reveal delayMs={180} className="mt-4 flex flex-wrap gap-3">
-          <a
-            href="#prijzen"
-            className="ios-glass-pill min-w-[11rem] flex-1 focus-visible:ring-emerald-300/70"
-          >
-            <span>Bekijk prijzen</span>
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </a>
-          <a
-            href="#gallery-heading"
-            className="ios-glass-pill min-w-[11rem] flex-1 focus-visible:ring-emerald-300/70"
-          >
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M3 7h4l2-2h6l2 2h4v12H3z"/><circle cx="12" cy="13" r="4"/></svg>
-            <span>Bekijk galerij</span>
-          </a>
-        </Reveal>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {facts.map((fact, index) => (
-            <Reveal key={fact.label} delayMs={index * 50}>
-              <article className="rounded-2xl border border-zinc-800 bg-zinc-900/80 p-5 backdrop-blur">
-                <p className="text-3xl font-bold text-zinc-50">{fact.value}</p>
-                <p className="mt-1 text-sm text-zinc-400">{fact.label}</p>
-              </article>
-            </Reveal>
-          ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl py-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl px-4">
-          <div className="flex items-center justify-between gap-3">
-            <h2 className="text-xl font-semibold text-zinc-100">Openingstijden</h2>
-            <span className={`rounded-full border px-2.5 py-1 text-xs font-medium ${status.isVacation ? "border-amber-500/30 bg-amber-500/15 text-amber-100" : status.isOpen ? "border-emerald-500/20 bg-emerald-500/15 text-emerald-200" : "border-white/15 bg-white/5 text-white/75"}`}>
+      <section className="border-y border-white/10 bg-white/[0.03] py-7">
+        <div className="mx-auto grid max-w-6xl gap-5 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
+          <div className="flex flex-col justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase text-zinc-500">Vandaag</p>
+              <h2 className="mt-2 text-2xl font-semibold text-zinc-100">Openingstijden</h2>
+            </div>
+            <span className={`w-fit rounded-full border px-2.5 py-1 text-xs font-medium ${status.isVacation ? "border-amber-500/30 bg-amber-500/15 text-amber-100" : status.isOpen ? "border-emerald-500/20 bg-emerald-500/15 text-emerald-200" : "border-white/15 bg-white/5 text-white/75"}`}>
               {status.badgeLabel}
             </span>
           </div>
-          <div className="mt-3 rounded-2xl border border-white/10 bg-white/5 px-4 backdrop-blur">
-            <div className="divide-y divide-white/10">
-              {dayLabels.map((label, dayIndex) => {
-                const offset = dayIndex - referenceDate.getDay();
-                const date = new Date(referenceDate);
-                date.setDate(referenceDate.getDate() + offset);
-                const daySchedule = getScheduleForDate(date);
-                const isToday = dayIndex === today;
+          <div className="grid gap-x-4 gap-y-2 sm:grid-cols-2 lg:grid-cols-4">
+            {dayLabels.map((label, dayIndex) => {
+              const offset = dayIndex - referenceDate.getDay();
+              const date = new Date(referenceDate);
+              date.setDate(referenceDate.getDate() + offset);
+              const daySchedule = getScheduleForDate(date);
+              const isToday = dayIndex === today;
 
-                return (
-                  <div
-                    key={label}
-                    className={`grid grid-cols-[1fr_auto] items-center gap-4 py-3 text-sm ${isToday ? "-mx-2 rounded-lg bg-emerald-500/10 px-2" : ""}`}
-                  >
-                    <span className={`font-semibold ${isToday ? "text-emerald-200" : dayIndex === 1 ? "text-zinc-500" : "text-white/90"}`}>
-                      {label}
-                      {isToday ? " (vandaag)" : ""}
-                    </span>
-                    <span className={`tabular-nums text-right ${dayIndex === 1 ? "text-zinc-500" : "text-white/85"}`}>
-                      {daySchedule.closed ? (
-                        <span className={`font-medium ${dayIndex === 1 ? "text-zinc-500" : "text-zinc-300"}`}>{dayIndex === 1 ? "Gesloten (rustdag)" : "Gesloten"}</span>
-                      ) : (
-                        `${formatHourRange(daySchedule.open)}–${formatHourRange(daySchedule.close)}`
-                      )}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+              return (
+                <div
+                  key={label}
+                  className={`grid grid-cols-[1fr_auto] items-center gap-4 border-b border-white/10 py-3 text-sm ${isToday ? "border-emerald-400/40 text-emerald-100" : ""}`}
+                >
+                  <span className={`font-semibold ${dayIndex === 1 && !isToday ? "text-zinc-500" : "text-white/90"}`}>
+                    {label}
+                    {isToday ? " (vandaag)" : ""}
+                  </span>
+                  <span className={`tabular-nums text-right ${dayIndex === 1 && !isToday ? "text-zinc-500" : "text-white/85"}`}>
+                    {daySchedule.closed ? (
+                      <span className={`font-medium ${dayIndex === 1 && !isToday ? "text-zinc-500" : "text-zinc-300"}`}>{dayIndex === 1 ? "Gesloten (rustdag)" : "Gesloten"}</span>
+                    ) : (
+                      `${formatHourRange(daySchedule.open)}-${formatHourRange(daySchedule.close)}`
+                    )}
+                  </span>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
