@@ -206,7 +206,7 @@ body {
   opacity: 0;
   transform: translateY(8px) scale(0.98);
   transition: opacity 220ms ease-out, transform 220ms ease-out;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(6px);
 }
 
 .price-toast[data-visible="true"] {
@@ -272,10 +272,10 @@ body {
 
 @layer components {
   .ios-glass-pill {
-    @apply inline-flex h-11 items-center justify-center gap-2 rounded-full border px-5 text-sm font-semibold text-zinc-100 shadow-sm shadow-black/20 transition duration-200 ease-out;
+    @apply inline-flex h-11 items-center justify-center gap-2 rounded-full border px-5 text-sm font-semibold text-zinc-100 shadow-sm shadow-black/10 transition duration-200 ease-out;
     border-color: var(--ios-glass-border);
     background: var(--ios-glass-bg);
-    backdrop-filter: blur(14px);
+    backdrop-filter: blur(10px);
   }
 
   .ios-glass-pill:hover {
@@ -295,6 +295,20 @@ body {
   .ios-glass-pill--primary {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0.1));
     border-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+`@media` (max-width: 640px) {
+  .ios-glass-pill,
+  .price-toast,
+  .sticky-mobile-cta button,
+  .sticky-mobile-cta a {
+    backdrop-filter: none;
+    box-shadow: none;
+    background: rgba(24, 24, 27, 0.9);
+  }
+  .ios-glass-pill:focus-visible {
+    box-shadow: 0 0 0 3px var(--ios-glass-ring);
   }
 }
 
