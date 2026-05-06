@@ -10,7 +10,7 @@ INPUT="$1"
 OUTPUT="$2"
 SIZE="${3:-540:960}"
 
-ffmpeg -i "$INPUT" \
+ffmpeg -y -i "$INPUT" \
   -an \
   -r 25 \
   -vf "scale=${SIZE}:force_original_aspect_ratio=decrease,pad=${SIZE}:(ow-iw)/2:(oh-ih)/2" \
