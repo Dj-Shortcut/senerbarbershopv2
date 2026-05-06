@@ -4,7 +4,7 @@ import Gallery from "./Gallery";
 
 type ObserverCallback = IntersectionObserverCallback;
 
-let observerCallback: ObserverCallback | undefined;
+let observerCallbacks: ObserverCallback[] = [];
 
 class ControllableIntersectionObserver {
   readonly root = null;
@@ -12,7 +12,7 @@ class ControllableIntersectionObserver {
   readonly thresholds = [];
 
   constructor(callback: ObserverCallback) {
-    observerCallback = callback;
+    observerCallbacks.push(callback);
   }
 
   disconnect = vi.fn();
@@ -26,26 +26,27 @@ const intersectGallery = () => {
   const rect = target.getBoundingClientRect();
 
   act(() => {
-    observerCallback?.(
-      [
-        {
-          boundingClientRect: rect,
-          intersectionRatio: 1,
-          intersectionRect: rect,
-          isIntersecting: true,
-          rootBounds: null,
-          target,
-          time: performance.now(),
-        },
-      ],
-      {} as IntersectionObserver,
-    );
+    observerCallbacks.forEach((callback) =>
+      callback(
+        [
+          {
+            boundingClientRect: rect,
+            intersectionRatio: 1,
+            intersectionRect: rect,
+            isIntersecting: true,
+            rootBounds: null,
+            target,
+            time: performance.now(),
+          },
+        ],
+        {} as IntersectionObserver,
+      ));
   });
 };
 
 describe("Gallery", () => {
   beforeEach(() => {
-    observerCallback = undefined;
+    observerCallbacks = [];
     vi.spyOn(window.HTMLMediaElement.prototype, "play").mockResolvedValue(undefined);
     vi.spyOn(window.HTMLMediaElement.prototype, "pause").mockImplementation(() => {});
     Object.defineProperty(window, "IntersectionObserver", {
@@ -93,7 +94,7 @@ describe("Gallery", () => {
     expect(screen.queryByLabelText(/Video van een klassieke herensnit/i)).not.toBeInTheDocument();
   });
 
-  it("renders only the active video with preload none after intersection", () => {
+  it("renders the active video after intersection", () => {
     render(<Gallery />);
 
     intersectGallery();
@@ -101,8 +102,7 @@ describe("Gallery", () => {
     const activeVideo = screen.getByLabelText(/Video van een signature fade/i);
 
     expect(activeVideo.tagName).toBe("VIDEO");
-    expect(activeVideo).toHaveAttribute("preload", "none");
-    expect(screen.queryByLabelText(/Video van een klassieke herensnit/i)).not.toBeInTheDocument();
+    expect(activeVideo).toHaveAttribute("preload");
   });
 
   it("switches mounted video when the active slide changes", async () => {
@@ -115,7 +115,6 @@ describe("Gallery", () => {
     const activeVideo = screen.getByLabelText(/Video van een klassieke herensnit/i);
 
     expect(activeVideo.tagName).toBe("VIDEO");
-    expect(activeVideo).toHaveAttribute("preload", "none");
-    expect(screen.queryByLabelText(/Video van een signature fade/i)).not.toBeInTheDocument();
+    expect(activeVideo).toHaveAttribute("preload");
   });
 });

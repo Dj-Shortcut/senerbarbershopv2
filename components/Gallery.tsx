@@ -118,9 +118,6 @@ function pauseAndResetVideo(video: HTMLVideoElement | null) {
   }
 
   video.pause();
-  if (video.currentTime > 0.1) {
-    video.currentTime = 0;
-  }
 }
 
 export default function Gallery({ items = defaultItems, className = "" }: GalleryProps) {
@@ -135,6 +132,9 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
   const [dragOffsetPercent, setDragOffsetPercent] = useState(0);
   const [missingVideos, setMissingVideos] = useState<Record<string, boolean>>({});
   const [loadedVideos, setLoadedVideos] = useState<Record<string, boolean>>({});
+  const [isMobileViewport, setIsMobileViewport] = useState(false);
+  const [isGalleryInView, setIsGalleryInView] = useState(true);
+  const [hasUserStartedVideo, setHasUserStartedVideo] = useState(false);
   const prefersReducedMotion = usePrefersReducedMotion();
 
   const goToSlide = (index: number) => {
@@ -155,6 +155,17 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
   const goToNextSlide = () => {
     goToSlide(activeIndex + 1);
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+    const mediaQuery = window.matchMedia("(max-width: 639px)");
+    const updateIsMobile = () => setIsMobileViewport(mediaQuery.matches);
+    updateIsMobile();
+    mediaQuery.addEventListener("change", updateIsMobile);
+    return () => mediaQuery.removeEventListener("change", updateIsMobile);
+  }, []);
 
   useEffect(() => {
     const node = videoMountRef.current;
@@ -181,6 +192,24 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
   }, []);
 
   useEffect(() => {
+    const node = videoMountRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsGalleryInView(entry.isIntersecting);
+      },
+      { threshold: 0.05 },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [shouldRenderVideo]);
+
+  useEffect(() => {
+    if (isGalleryInView) return;
+    videoRefs.current.forEach((video) => video?.pause());
+  }, [isGalleryInView]);
+
+  useEffect(() => {
     if (!shouldRenderVideo) {
       return;
     }
@@ -194,9 +223,10 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
 
     previousActiveVideoRef.current = activeVideo ?? null;
 
-    if (!activeVideo || prefersReducedMotion) {
+    if (!activeVideo || prefersReducedMotion || !isGalleryInView) {
       return;
     }
+    if (isMobileViewport && !hasUserStartedVideo) return;
 
     const playPromise = activeVideo.play();
     if (playPromise && typeof playPromise.catch === "function") {
@@ -204,7 +234,7 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
         // Ignore autoplay restrictions; user interaction via controls can still play.
       });
     }
-  }, [activeIndex, prefersReducedMotion, shouldRenderVideo]);
+  }, [activeIndex, hasUserStartedVideo, isGalleryInView, isMobileViewport, prefersReducedMotion, shouldRenderVideo]);
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     pointerStartX.current = event.clientX;
@@ -291,6 +321,7 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                   >
                     {featuredVideos.map((video, index) => {
                       const isActiveVideo = index === activeIndex;
+                      const shouldMountVideo = isMobileViewport ? (hasUserStartedVideo && isActiveVideo) : true;
 
                       return (
                         <div key={video.id} className="relative h-full w-full flex-[0_0_100%] overflow-hidden">
@@ -310,7 +341,8 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                                 priority={false}
                                 aria-hidden="true"
                               />
-                              <video
+                              {shouldMountVideo ? (
+                                <video
                                 key={video.id}
                                 ref={(node) => {
                                   const previousNode = videoRefs.current[index];
@@ -320,13 +352,15 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                                     previousActiveVideoRef.current = null;
                                   }
                                 }}
-                                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${loadedVideos[video.id] ? "opacity-100" : "opacity-0"}`}
+                                className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+                                  loadedVideos[video.id] && isActiveVideo ? "opacity-100" : "opacity-0"
+                                }`}
                                 style={{ objectPosition: video.objectPosition }}
                                 controls={prefersReducedMotion}
                                 loop={!prefersReducedMotion}
                                 muted
                                 playsInline
-                                preload="none"
+                                preload={isMobileViewport ? "none" : "auto"}
                                 poster={video.poster}
                                 aria-label={video.ariaLabel}
                                 onLoadedData={() => {
@@ -338,7 +372,39 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                               >
                                 <source src={video.src} type="video/mp4" />
                               </video>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => setHasUserStartedVideo(true)}
+                                  className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 text-white"
+                                  aria-label="Start video"
+                                >
+                                  <span className="rounded-full border border-white/50 bg-black/60 px-4 py-2 text-sm font-semibold">▶ Speel video</span>
+                                </button>
+                              )}
                             </>
+                          ) : shouldMountVideo ? (
+                            <video
+                              key={`${video.id}-inactive`}
+                              ref={(node) => {
+                                videoRefs.current[index] = node;
+                              }}
+                              className="absolute inset-0 h-full w-full object-cover opacity-0"
+                              style={{ objectPosition: video.objectPosition }}
+                              muted
+                              playsInline
+                              preload={isMobileViewport ? "none" : "auto"}
+                              poster={video.poster}
+                              aria-label={video.ariaLabel}
+                              onLoadedData={() => {
+                                setLoadedVideos((previous) => ({ ...previous, [video.id]: true }));
+                              }}
+                              onError={() => {
+                                setMissingVideos((previous) => ({ ...previous, [video.id]: true }));
+                              }}
+                            >
+                              <source src={video.src} type="video/mp4" />
+                            </video>
                           ) : (
                             <Image
                               src={video.poster}
