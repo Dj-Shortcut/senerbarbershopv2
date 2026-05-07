@@ -8,8 +8,11 @@ import StickyMobileCta from "../components/StickyMobileCta";
 import { getScheduleForDate } from "../lib/schedule";
 import { SERVICES, getServiceLabel } from "../lib/services";
 import { getShopStatus } from "../lib/status";
+import { getBelgianWallClockDate } from "../lib/timezone";
 import { createDrukteWhatsAppUrl } from "../lib/whatsapp";
 import { vacationEnabled, vacationReturnDate } from "../lib/config";
+
+export const revalidate = 60;
 
 const facts = [
   { label: "Afwerking", value: "Strakke contouren" },
@@ -24,7 +27,7 @@ function formatHourRange(hour: string) {
 }
 
 export default function HomePage() {
-  const referenceDate = new Date();
+  const referenceDate = getBelgianWallClockDate();
   const status = getShopStatus(referenceDate);
   const selectedService = SERVICES[0];
   const today = referenceDate.getDay();

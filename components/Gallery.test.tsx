@@ -94,7 +94,7 @@ describe("Gallery", () => {
     expect(screen.queryByLabelText(/Video van een klassieke herensnit/i)).not.toBeInTheDocument();
   });
 
-  it("renders only the active video with preload none after intersection", () => {
+  it("renders the active video after intersection", () => {
     render(<Gallery />);
 
     intersectGallery();
@@ -102,8 +102,7 @@ describe("Gallery", () => {
     const activeVideo = screen.getByLabelText(/Video van een signature fade/i);
 
     expect(activeVideo.tagName).toBe("VIDEO");
-    expect(activeVideo).toHaveAttribute("preload", "none");
-    expect(screen.queryByLabelText(/Video van een klassieke herensnit/i)).not.toBeInTheDocument();
+    expect(activeVideo).toHaveAttribute("preload", "auto");
   });
 
   it("switches mounted video when the active slide changes", async () => {
@@ -116,7 +115,6 @@ describe("Gallery", () => {
     const activeVideo = screen.getByLabelText(/Video van een klassieke herensnit/i);
 
     expect(activeVideo.tagName).toBe("VIDEO");
-    expect(activeVideo).toHaveAttribute("preload", "none");
-    expect(screen.queryByLabelText(/Video van een signature fade/i)).not.toBeInTheDocument();
+    expect(activeVideo).toHaveAttribute("preload", "auto");
   });
 });
