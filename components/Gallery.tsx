@@ -341,7 +341,7 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                                 priority={false}
                                 aria-hidden="true"
                               />
-                              {!isMobileViewport || hasUserStartedVideo ? (
+                              {shouldMountVideo ? (
                                 <video
                                 key={video.id}
                                 ref={(node) => {
@@ -377,7 +377,7 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                                   type="button"
                                   onClick={() => setHasUserStartedVideo(true)}
                                   className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 text-white"
-                                  aria-label="Speel video"
+                                  aria-label="Start video"
                                 >
                                   <span className="rounded-full border border-white/50 bg-black/60 px-4 py-2 text-sm font-semibold">▶ Speel video</span>
                                 </button>
