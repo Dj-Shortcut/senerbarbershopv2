@@ -298,7 +298,7 @@ body {
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 639px) {
   .ios-glass-pill,
   .price-toast,
   .sticky-mobile-cta button,

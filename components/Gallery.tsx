@@ -377,7 +377,7 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                                   type="button"
                                   onClick={() => setHasUserStartedVideo(true)}
                                   className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 text-white"
-                                  aria-label="Start video"
+                                  aria-label="Speel video"
                                 >
                                   <span className="rounded-full border border-white/50 bg-black/60 px-4 py-2 text-sm font-semibold">▶ Speel video</span>
                                 </button>
@@ -393,7 +393,7 @@ export default function Gallery({ items = defaultItems, className = "" }: Galler
                               style={{ objectPosition: video.objectPosition }}
                               muted
                               playsInline
-                              preload={isMobileViewport ? "none" : "auto"}
+                              preload={isMobileViewport ? "none" : "metadata"}
                               poster={video.poster}
                               aria-label={video.ariaLabel}
                               onLoadedData={() => {

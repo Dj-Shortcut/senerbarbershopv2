@@ -102,7 +102,7 @@ describe("Gallery", () => {
     const activeVideo = screen.getByLabelText(/Video van een signature fade/i);
 
     expect(activeVideo.tagName).toBe("VIDEO");
-    expect(activeVideo).toHaveAttribute("preload");
+    expect(activeVideo).toHaveAttribute("preload", "auto");
   });
 
   it("switches mounted video when the active slide changes", async () => {
@@ -115,6 +115,6 @@ describe("Gallery", () => {
     const activeVideo = screen.getByLabelText(/Video van een klassieke herensnit/i);
 
     expect(activeVideo.tagName).toBe("VIDEO");
-    expect(activeVideo).toHaveAttribute("preload");
+    expect(activeVideo).toHaveAttribute("preload", "auto");
   });
 });
