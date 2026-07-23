@@ -1,4 +1,12 @@
-import { CLOSE_HOUR, HOLIDAYS_BY_YEAR, OPEN_DAYS, OPEN_HOUR } from "./config";
+import {
+  CLOSE_HOUR,
+  HOLIDAYS_BY_YEAR,
+  OPEN_DAYS,
+  OPEN_HOUR,
+  vacationEnabled,
+  vacationReturnDateIso,
+  vacationStartDateIso,
+} from "./config";
 
 type WeekDay =
   | "sunday"
@@ -19,6 +27,19 @@ const DAY_KEYS: WeekDay[] = ["sunday", "monday", "tuesday", "wednesday", "thursd
 
 const CLOSED_DAY: DailySchedule = { open: "00:00", close: "00:00", closed: true };
 
+function toDateKey(date: Date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
+export function isVacationDate(date: Date) {
+  if (!vacationEnabled) {
+    return false;
+  }
+
+  const dateKey = toDateKey(date);
+  return dateKey >= vacationStartDateIso && dateKey < vacationReturnDateIso;
+}
+
 function isHoliday(date: Date) {
   const year = date.getFullYear();
   const monthDay = `${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
@@ -26,7 +47,7 @@ function isHoliday(date: Date) {
 }
 
 export function getScheduleForDate(date: Date): DailySchedule {
-  if (isHoliday(date)) {
+  if (isVacationDate(date) || isHoliday(date)) {
     return CLOSED_DAY;
   }
 

@@ -1,4 +1,13 @@
-import { CONTACT_CONFIG, OPEN_DAYS, OPEN_HOUR, CLOSE_HOUR, PHONE_E164 } from "../config";
+import {
+  CONTACT_CONFIG,
+  OPEN_DAYS,
+  OPEN_HOUR,
+  CLOSE_HOUR,
+  PHONE_E164,
+  vacationEnabled,
+  vacationLastClosedDateIso,
+  vacationStartDateIso,
+} from "../config";
 import { BUSINESS_NAME, SITE_URL } from "../seo";
 import { SERVICES } from "../services";
 
@@ -11,6 +20,22 @@ const dayMap: Record<(typeof OPEN_DAYS)[number], string> = {
 };
 
 const BUSINESS_ID = `${SITE_URL}#barbershop`;
+
+function getSpecialOpeningHoursSpecification() {
+  if (!vacationEnabled) {
+    return [];
+  }
+
+  return [
+    {
+      "@type": "OpeningHoursSpecification",
+      validFrom: vacationStartDateIso,
+      validThrough: vacationLastClosedDateIso,
+      opens: "00:00",
+      closes: "00:00",
+    },
+  ];
+}
 
 function toOffer(service: (typeof SERVICES)[number]) {
   const numericPrice = Number(service.price.replace("€", "").trim());
@@ -46,12 +71,15 @@ export function getLocalBusinessSchema() {
           latitude: 50.8339,
           longitude: 4.0261,
         },
-        openingHoursSpecification: OPEN_DAYS.map((day) => ({
-          "@type": "OpeningHoursSpecification",
-          dayOfWeek: `https://schema.org/${dayMap[day]}`,
-          opens: OPEN_HOUR[day],
-          closes: CLOSE_HOUR[day],
-        })),
+        openingHoursSpecification: [
+          ...OPEN_DAYS.map((day) => ({
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: `https://schema.org/${dayMap[day]}`,
+            opens: OPEN_HOUR[day],
+            closes: CLOSE_HOUR[day],
+          })),
+          ...getSpecialOpeningHoursSpecification(),
+        ],
         hasOfferCatalog: {
           "@type": "OfferCatalog",
           name: "Prijslijst",

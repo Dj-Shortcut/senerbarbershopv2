@@ -62,6 +62,23 @@ describe("getStatus", () => {
     expect(status.label).toBe("Gesloten • opent dinsdag om 09:00");
   });
 
+  it("returns vacation copy before the configured return date", () => {
+    const status = getStatus(atBrussels("2026-08-12T12:00:00+02:00"));
+
+    expect(status.isOpen).toBe(false);
+    expect(status.isVacation).toBe(true);
+    expect(status.label).toBe("Gesloten wegens vakantie • terug op 13/08/2026");
+    expect(status.badgeLabel).toBe("🟡 Gesloten wegens vakantie – terug op 13/08/2026");
+  });
+
+  it("returns normal opening hours on the configured return date", () => {
+    const status = getStatus(atBrussels("2026-08-13T10:00:00+02:00"));
+
+    expect(status.isOpen).toBe(true);
+    expect(status.isVacation).toBe(false);
+    expect(status.label).toBe("Open • sluit om 19:00 (over 9u)");
+  });
+
   it("returns next opening from a fixed mocked clock", () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-02-17T08:00:00.000+01:00")); // Tuesday before opening in Europe/Brussels

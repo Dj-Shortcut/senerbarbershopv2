@@ -14,7 +14,15 @@ describe("getLocalBusinessSchema", () => {
     expect(barberShop["@type"]).toBe("BarberShop");
     expect(barberShop.hasOfferCatalog).toBeDefined();
     expect(barberShop.hasOfferCatalog?.itemListElement.length).toBeGreaterThan(0);
-    expect(barberShop.openingHoursSpecification).toHaveLength(5);
+    expect(barberShop.openingHoursSpecification).toHaveLength(6);
+    expect(barberShop.openingHoursSpecification).toContainEqual(
+      expect.objectContaining({
+        validFrom: "2026-07-23",
+        validThrough: "2026-08-12",
+        opens: "00:00",
+        closes: "00:00",
+      }),
+    );
 
     expect(website["@type"]).toBe("WebSite");
     expect(website.publisher).toBeDefined();
