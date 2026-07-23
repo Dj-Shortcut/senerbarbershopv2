@@ -28,8 +28,11 @@ export const HOLIDAYS_BY_YEAR: Record<number, string[]> = {
   2026: ["01-01", "12-25", "12-26"],
 };
 
-export const vacationEnabled = false;
-export const vacationReturnDate = "15/08/2026";
+export const vacationEnabled = true;
+export const vacationStartDateIso = "2026-07-23";
+export const vacationLastClosedDateIso = "2026-08-12";
+export const vacationReturnDateIso = "2026-08-13";
+export const vacationReturnDate = "13/08/2026";
 
 export const CONTACT_CONFIG = {
   social: {

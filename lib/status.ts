@@ -1,4 +1,4 @@
-import { getScheduleForDate } from "./schedule";
+import { getScheduleForDate, isVacationDate } from "./schedule";
 import { vacationEnabled, vacationReturnDate } from "./config";
 
 type BusyLevel = "Rustig" | "Normaal" | "Druk";
@@ -79,7 +79,7 @@ function getNextOpeningLabel(now: Date, dayOffset: number) {
 }
 
 export function getStatus(now = new Date()) {
-  if (vacationEnabled) {
+  if (vacationEnabled && isVacationDate(now)) {
     return {
       isOpen: false,
       isVacation: true,
