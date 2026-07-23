@@ -55,8 +55,7 @@ Opmerking:
 - Zonder env var valt de app terug op een veilige standaardwaarde.
 
 ## Live demo
-- Productie: https://www.thesenerbarber.be
-
+- Productie: https://www.thesenerbarber.shop
 ## CI
 Bij elke push/PR draait de workflow:
 1. lint
